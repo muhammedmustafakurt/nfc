@@ -6,6 +6,7 @@ import ChessOnline from '@/components/games/ChessOnline';
 import SpyfallOnline from '@/components/games/SpyfallOnline';
 import AjanlarOnline from '@/components/games/AjanlarOnline';
 import VampirOnline from '@/components/games/VampirOnline';
+import TabuOnline from '@/components/games/TabuOnline';
 import { findCafe, MASA_RE } from '@/lib/rooms';
 import { GAMES } from '@/lib/games';
 
@@ -32,6 +33,7 @@ export default async function TablePlay({ params }) {
       {g.id === 'spyfall' && <SpyfallOnline cafe={slug} masa={table} />}
       {g.id === 'ajanlar' && <AjanlarOnline cafe={slug} masa={table} />}
       {g.id === 'vampir' && <VampirOnline cafe={slug} masa={table} />}
+      {g.id === 'tabu' && <TabuOnline cafe={slug} masa={table} />}
       <p><Link href={`/${slug}/${table}/oyunlar`}>← Tüm oyunlar</Link></p>
     </main>
   );
