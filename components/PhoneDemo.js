@@ -34,7 +34,7 @@ function Screen({ id }) {
         <div className="mid">
           <p className="cap">Ad Soyad</p>
           <div className="fl">
-            <strong>Resul Giyim</strong>
+            <strong className="long">Teknoloji ve Bilişim Hizmetleri Anonim Şirketi</strong>
             <b className="cb"><CopyGlyph />Kopyala</b>
           </div>
           <p className="sub">Havale / EFT için IBAN</p>
@@ -61,7 +61,7 @@ function Screen({ id }) {
     return (
       <div className="ph-screen ph-insta">
         <div className="av" aria-hidden="true" />
-        <strong>@resulgiyim</strong>
+        <strong>@teknoloji</strong>
         <i>Takip et</i>
         <div className="grid" aria-hidden="true">{Array.from({ length: 6 }, (_, n) => <b key={n} />)}</div>
       </div>
