@@ -241,3 +241,9 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .once-code code { font-size: 1.05rem; background: var(--white); }
 .once-code.row-code { margin-top: 8px; font-size: .85rem; white-space: normal; }
 .muted-dash { color: var(--muted); }
+
+.game-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.game-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; }
+.game-list li div { display: grid; gap: 2px; min-width: 0; }
+.game-list .muted { font-size: .85rem; }
+.game-list form { flex: none; }
