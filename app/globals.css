@@ -343,3 +343,9 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 @media (prefers-reduced-motion: reduce) {
   .mono-tile.active, .die3, .tok.hop, .deed, .mono-crown, .mono-win, .confetti span, .pm em { animation: none; }
 }
+
+.mono-tile.p { padding-top: 24%; }
+.mono-tile .city-art { flex: 1 1 0; min-height: 0; width: 76%; color: var(--ink); }
+.deed-art { background: linear-gradient(#cfe9ff, var(--white)); padding: 4px 0 0; }
+.deed-svg { display: block; width: 78%; height: auto; margin: 0 auto; color: var(--ink); max-height: 64px; }
+@container (max-width: 470px) { .mono-tile .city-art { display: none; } .mono-tile.p { padding-top: 0; } }

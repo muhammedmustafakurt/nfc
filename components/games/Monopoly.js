@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import CityArt, { CITY_OF } from './CityArt';
 import { TILES, COLORS, newGame, roll, buy, skipBuy } from '@/lib/emlak';
 
 // Tahtanın kenarı boyunca 7x7 ızgarada saat yönünde yerleşim (0. kare sağ alt köşe).
@@ -102,6 +103,7 @@ export default function Monopoly() {
               style={{ gridRow: r + 1, gridColumn: c + 1, '--own': o !== undefined ? COLORS[o] : undefined }}
             >
               {BAND[i] && <b className="band" style={{ background: BAND[i] }} />}
+              {CITY_OF[i] && <CityArt id={CITY_OF[i]} color={BAND[i]} />}
               {ICON[t.t] && <em className="ico">{ICON[t.t]}</em>}
               <span>{t.n}</span>
               {t.price && <small>₺{t.price}</small>}
@@ -126,6 +128,7 @@ export default function Monopoly() {
               {g.phase === 'buy' && !moving ? (
                 <div className="deed">
                   <div className="deed-head" style={{ background: BAND[cur.pos] }}>Tapu</div>
+                  <div className="deed-art"><CityArt id={CITY_OF[cur.pos]} color={BAND[cur.pos]} className="deed-svg" /></div>
                   <h3>{curTile.n}</h3>
                   <p>Fiyat <b>₺{curTile.price}</b></p>
                   <p>Kira <b>₺{curTile.rent}</b> <small>× sahip olunan mülk</small></p>
