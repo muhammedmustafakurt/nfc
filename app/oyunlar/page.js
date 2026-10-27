@@ -17,9 +17,11 @@ export default function GamesPage() {
               <strong>{g.name}</strong>
               <span className="muted">{g.players} kişi · {g.minutes} dk · {g.note}</span>
             </div>
-            {g.play
-              ? <Link className="btn sm primary" href={`/oyunlar/${g.id}`}>Oyna</Link>
-              : <span className="pill">Yakında</span>}
+            {g.tableOnly
+              ? <span className="pill on">Kafede masada</span>
+              : g.play
+                ? <Link className="btn sm primary" href={`/oyunlar/${g.id}`}>Oyna</Link>
+                : <span className="pill">Yakında</span>}
           </li>
         ))}
       </ul>

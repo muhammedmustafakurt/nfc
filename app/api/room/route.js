@@ -4,7 +4,7 @@ import { findCafe, readRoom, mutate, view, ROOM_GAMES, MASA_RE, PID_RE } from '@
 export const dynamic = 'force-dynamic';
 
 const json = (body, status = 200) => NextResponse.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
-const ACTIONS = new Set(['join', 'leave', 'start', 'roll', 'buy', 'skip', 'move', 'reset']);
+const ACTIONS = new Set(['join', 'leave', 'start', 'roll', 'buy', 'skip', 'move', 'accuse', 'vote', 'guess', 'timeout', 'reset']);
 
 async function resolve({ cafe, masa, game, pid }) {
   if (!/^[a-z0-9-]{1,50}$/.test(String(cafe)) || !MASA_RE.test(String(masa)) || !ROOM_GAMES.has(game) || !PID_RE.test(String(pid))) {
@@ -22,7 +22,7 @@ export async function GET(req) {
   if (err) return err;
   const room = await readRoom(biz.id, q.masa, q.game);
   if (String(room.version) === q.v) return json({ unchanged: true, version: room.version });
-  return json(view(room, q.pid));
+  return json(view(room, q.pid, q.game));
 }
 
 export async function POST(req) {
@@ -32,6 +32,6 @@ export async function POST(req) {
   if (err) return err;
   const a = body.action;
   if (!a || !ACTIONS.has(a.type)) return json({ error: 'Bilinmeyen işlem.' }, 400);
-  const res = await mutate(biz.id, body.masa, body.game, body.pid, { type: a.type, name: a.name, from: a.from, to: a.to });
-  return json({ ...view(res.room, body.pid), ...(res.error && { error: res.error }) }, res.error ? 409 : 200);
+  const res = await mutate(biz.id, body.masa, body.game, body.pid, { type: a.type, name: a.name, from: a.from, to: a.to, target: a.target, yes: a.yes, loc: a.loc });
+  return json({ ...view(res.room, body.pid, body.game), ...(res.error && { error: res.error }) }, res.error ? 409 : 200);
 }

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
 
 export default async function PlayPage({ params }) {
   const { game } = await params;
-  const g = GAMES.find((x) => x.id === game && x.play);
+  const g = GAMES.find((x) => x.id === game && x.play && !x.tableOnly);
   if (!g) notFound();
   const View = VIEWS[g.id];
   return (
