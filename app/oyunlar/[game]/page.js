@@ -20,7 +20,7 @@ export default async function PlayPage({ params }) {
   if (!g) notFound();
   const View = VIEWS[g.id];
   return (
-    <main className="shell">
+    <main className={`shell${g.id === 'monopoly' ? ' game-board' : ''}`}>
       <header><Mark /></header>
       <h1>{g.name}</h1>
       <View />
