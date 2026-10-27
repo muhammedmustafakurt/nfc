@@ -17,7 +17,7 @@ function getPid() {
 }
 
 // Masa odasını yoklar ve hamle gönderir. Tüm masa oyunları (Emlak Krallığı, Satranç) ortak kullanır.
-export default function useRoom({ cafe, masa, game }) {
+export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
   const [pid, setPid] = useState(null);
   const [room, setRoom] = useState(null);
   const [err, setErr] = useState('');
@@ -48,9 +48,9 @@ export default function useRoom({ cafe, masa, game }) {
       }
     };
     tick();
-    const id = setInterval(tick, POLL_MS);
+    const id = setInterval(tick, pollMs);
     return () => { dead = true; clearInterval(id); };
-  }, [pid, cafe, masa, game]);
+  }, [pid, cafe, masa, game, pollMs]);
 
   const send = useCallback(async (type, extra = {}) => {
     if (!pid || busy) return;
