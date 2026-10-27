@@ -1,5 +1,5 @@
 'use client';
-import { COLORS } from '@/lib/emlak';
+import { PALETTE } from '@/lib/emlak';
 
 // Masa lobisi: oyuncu listesi, katılma, başlatma ve ayrılma. Emlak Krallığı ve Satranç ortak kullanır.
 // seatNote(k): koltuğun yanında görünen not (ör. satrançta "Beyaz").
@@ -14,7 +14,7 @@ export default function Lobby({ masaNo, room, ui, max, min, seatNote }) {
         <ul className="mono-seats">
           {room.seats.map((s, k) => (
             <li key={k}>
-              <i className="av" style={{ background: COLORS[k] }}>{k + 1}</i>
+              <i className="av" style={{ background: PALETTE[k % PALETTE.length] }}>{k + 1}</i>
               <span>{s.name}{k === room.me ? ' (sen)' : ''}</span>
               <span className="host">{seatNote(k)}</span>
             </li>

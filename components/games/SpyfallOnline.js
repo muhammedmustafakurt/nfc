@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Lobby from './Lobby';
 import useRoom from './useRoom';
 import { LOCATIONS, DURATION_MS } from '@/lib/spyfall';
-import { COLORS } from '@/lib/emlak';
+import { PALETTE } from '@/lib/emlak';
 
 const fmt = (ms) => {
   const s = Math.max(0, Math.ceil(ms / 1000));
@@ -13,7 +13,7 @@ const CONFETTI = ['🎉', '✨', '🏆', '🎊', '⭐'];
 const RING = 2 * Math.PI * 54;
 
 function Avatar({ i, name, size }) {
-  return <i className={`sf-av${size ? ` ${size}` : ''}`} style={{ background: COLORS[i % COLORS.length] }}>{(name || '?').trim().charAt(0).toUpperCase()}</i>;
+  return <i className={`sf-av${size ? ` ${size}` : ''}`} style={{ background: PALETTE[i % PALETTE.length] }}>{(name || '?').trim().charAt(0).toUpperCase()}</i>;
 }
 
 // Masada casus oyunu: herkes kendi telefonunda gizli kartını görür.
