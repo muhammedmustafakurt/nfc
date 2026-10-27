@@ -8,7 +8,20 @@ import { TURN_MS } from '@/lib/kimim';
 const RING = 2 * Math.PI * 54;
 const MEDAL = ['🥇', '🥈', '🥉'];
 const CONFETTI = ['🎉', '✨', '🏆', '🎊', '⭐'];
-const HIST = { ok: 'buldu ✓', no: 'yanlış', skip: 'pas', time: 'süre doldu' };
+const HIST = { ok: 'buldu', no: 'yanlış bildi', skip: 'pas geçti', time: 'süresi doldu' };
+// Kart türü: renk ve simge, kartın ne olduğunu ilk bakışta anlatır.
+const CAT = {
+  'Türk ünlü': ['⭐', '#d6336c'],
+  'Tarihten': ['🏛️', '#a8681a'],
+  'Bilim ve sanat': ['🎨', '#7048e8'],
+  'Müzik': ['🎵', '#e8590c'],
+  'Sporcu': ['⚽', '#1f9d6b'],
+  'Çizgi film': ['🐭', '#f08c00'],
+  'Film ve dizi': ['🎬', '#2438e8'],
+  'Hayvan': ['🐾', '#0c8f9c'],
+  'Meslek': ['🛠️', '#5b6080'],
+};
+const catOf = (c) => CAT[c] || ['❓', '#5b6080'];
 
 // Masada Ben Kimim?: herkes başkalarının kartını görür, kendi kartını sorularla bulmaya çalışır.
 export default function KimimOnline({ cafe, masa }) {
@@ -57,6 +70,12 @@ export default function KimimOnline({ cafe, masa }) {
   const frac = running ? Math.min(1, left / TURN_MS) : 0;
   const urgency = left < 8000 ? 'low' : left < 18000 ? 'mid' : '';
   const rank = (i) => g.solved.indexOf(i);
+  const av = (i) => <i className="av" style={{ background: PALETTE[i % PALETTE.length] }}>{i + 1}</i>;
+
+  // Podyum: bulanların ilk üçü ortada en yüksek olacak şekilde 2-1-3 dizilir.
+  const top = over ? over.ranking.slice(0, Math.min(3, g.solved.length)) : [];
+  const podium = [1, 0, 2].filter((k) => k < top.length);
+  const rest = over ? over.ranking.slice(top.length) : [];
 
   return (
     <div className="km">
@@ -69,51 +88,55 @@ export default function KimimOnline({ cafe, masa }) {
               <span key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 6) * 0.3}s`, animationDuration: `${2.4 + (i % 4) * 0.4}s` }}>{CONFETTI[i % CONFETTI.length]}</span>
             ))}
           </div>
-          <div className="km-trophy" aria-hidden="true">{g.solved.length ? '🏆' : '🤷'}</div>
-          <p>{over.text}</p>
-          <ol className="km-rank">
-            {over.ranking.map((i, k) => (
-              <li key={i}>
-                <span className="medal">{k < g.solved.length ? (MEDAL[k] || `${k + 1}.`) : '–'}</span>
-                <b>{names[i]}</b>
-                <em>{g.cards[i].n}</em>
-              </li>
-            ))}
-          </ol>
+          <p className="km-win">{over.text}</p>
+          {top.length > 0 && (
+            <ol className="km-podium">
+              {podium.map((k) => (
+                <li key={k} className={`p${k + 1}`}>
+                  {av(top[k])}
+                  <b>{names[top[k]]}</b>
+                  <em>{g.cards[top[k]].n}</em>
+                  <div className="bar"><span>{MEDAL[k]}</span></div>
+                </li>
+              ))}
+            </ol>
+          )}
+          {rest.length > 0 && (
+            <ul className="km-rest">
+              {rest.map((i) => (
+                <li key={i}>{av(i)}<b>{names[i]}</b><em>{room.seats[i].left ? 'ayrıldı' : `bulamadı: ${g.cards[i].n}`}</em></li>
+              ))}
+            </ul>
+          )}
           {seated && <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>}
         </section>
       ) : (
-        <>
-          <div className="km-top">
-            <div className={`sf-clock ${urgency}`} role="timer" aria-label="Kalan süre">
+        <section className={`km-stage${myTurn ? ' me' : ''}`} style={{ '--pc': PALETTE[g.turn % PALETTE.length] }}>
+          <div className="km-head">
+            <div className={`km-ring ${urgency}`} role="timer" aria-label="Kalan süre">
               <svg viewBox="0 0 120 120" aria-hidden="true">
                 <circle className="track" cx="60" cy="60" r="54" />
                 <circle className="bar" cx="60" cy="60" r="54" strokeDasharray={RING} strokeDashoffset={RING * (1 - frac)} />
               </svg>
               <span>{Math.ceil(left / 1000)}</span>
             </div>
-            <p className="km-turn">
-              Sıra <b>{myTurn ? 'sende' : names[g.turn]}</b>
-              <small>Tur {Math.min(g.turnNo + 1, g.maxTurns)}/{g.maxTurns}</small>
-            </p>
+            <div className="txt">
+              <small>Tur {Math.min(g.turnNo + 1, g.maxTurns)} / {g.maxTurns}</small>
+              <h2>{myTurn ? 'Sıra sende' : `${names[g.turn]} tahmin ediyor`}</h2>
+              <p>{myTurn ? 'Evet/hayır soruları sor, bildiğinde yüksek sesle söyle.' : <>Kartı sen görüyorsun: <b>{g.cards[g.turn].n}</b></>}</p>
+            </div>
           </div>
-
-          {myTurn ? (
-            <section className="km-act me">
-              <p>Masaya <b>evet/hayır</b> soruları sor. Bildiğini düşünüyorsan yüksek sesle tahmin et; diğerleri onaylasın.</p>
-              <button className="btn" disabled={busy} onClick={() => send('kskip')}>Sırayı bitir</button>
-            </section>
-          ) : seated ? (
-            <section className="km-act">
-              <p><b>{names[g.turn]}</b> tahmin ediyor. Kartı sen görüyorsun: <b>{g.cards[g.turn].n}</b></p>
-              <div className="km-btns">
-                <button className="btn" disabled={busy} onClick={() => send('kno')}>Yanlış ✗</button>
-                <button className="btn primary ok" disabled={busy} onClick={() => send('kok')}>Doğru ✓</button>
-              </div>
-            </section>
-          ) : null}
+          {myTurn && (
+            <button className="btn" disabled={busy} onClick={() => send('kskip')}>Sırayı bitir</button>
+          )}
+          {!myTurn && seated && (
+            <div className="km-btns">
+              <button className="btn no" disabled={busy} onClick={() => send('kno')}>Yanlış</button>
+              <button className="btn ok" disabled={busy} onClick={() => send('kok')}>Doğru</button>
+            </div>
+          )}
           {g.note && <p className="km-note">{g.note}</p>}
-        </>
+        </section>
       )}
 
       <ul className="km-grid">
@@ -121,23 +144,36 @@ export default function KimimOnline({ cafe, masa }) {
           const done = g.solved.includes(i);
           const self = i === me;
           const hidden = c.n === null;
+          const [icon, color] = catOf(c.c);
           return (
-            <li key={i} className={`km-card${!over && g.turn === i ? ' on' : ''}${done ? ' done' : ''}${self ? ' self' : ''}${room.seats[i].left ? ' left' : ''}`}>
-              <div className="who">
-                <i className="av" style={{ background: PALETTE[i % PALETTE.length] }}>{i + 1}</i>
+            <li
+              key={i}
+              className={`km-card${!over && g.turn === i ? ' on' : ''}${done ? ' done' : ''}${self && hidden ? ' self' : ''}${room.seats[i].left ? ' left' : ''}`}
+              style={{ '--cc': color, '--tilt': `${i % 2 ? 1.2 : -1.2}deg` }}
+            >
+              <div className="top"><span aria-hidden="true">{icon}</span><small>{c.c}</small></div>
+              <div className="face" key={hidden ? 'h' : c.n}>
+                {hidden ? (
+                  <>
+                    <b className="q" aria-hidden="true">?</b>
+                    <span>{self ? 'Senin kartın' : 'Gizli'}</span>
+                  </>
+                ) : (
+                  <b className="nm">{c.n}</b>
+                )}
+              </div>
+              <div className="foot">
+                {av(i)}
                 <span>{names[i]}{self ? ' (sen)' : ''}</span>
                 {done && <span className="medal" aria-label={`${rank(i) + 1}. oldu`}>{MEDAL[rank(i)] || `${rank(i) + 1}.`}</span>}
               </div>
-              <div className="band">
-                <small>{c.c}</small>
-                <b>{hidden ? '❓ ???' : c.n}</b>
-              </div>
+              {done && <div className="stamp" aria-hidden="true">Buldu!</div>}
             </li>
           );
         })}
       </ul>
       {seated && !over && (
-        <p className="km-hint">{mySolved ? 'Kartını buldun! Diğerlerine yardım ederken onay vermeye devam et.' : 'Kendi kartının adı sana gösterilmez; yalnızca türünü görürsün.'}</p>
+        <p className="km-hint">{mySolved ? 'Kartını buldun! Sıra başkalarındayken onay vermeye devam et.' : 'Kendi kartının adı gösterilmez, yalnızca türünü görürsün.'}</p>
       )}
 
       {g.history.length > 0 && (
@@ -145,7 +181,7 @@ export default function KimimOnline({ cafe, masa }) {
           <h2>Son hamleler</h2>
           <ul>
             {[...g.history].reverse().map((h, i) => (
-              <li key={i} className={h.r}>{names[h.seat]} · {HIST[h.r]}{h.card ? ` (${h.card})` : ''}</li>
+              <li key={i} className={h.r}>{names[h.seat]} {HIST[h.r]}{h.card ? `: ${h.card}` : ''}</li>
             ))}
           </ul>
         </section>

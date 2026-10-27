@@ -654,44 +654,85 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 @media (prefers-reduced-motion: reduce) { .tb-card, .tb-trophy, .tb-confetti span { animation: none; } }
 
 /* Ben Kimim? */
-.km { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin: 12px 0 20px; min-width: 0; }
+.km { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin: 12px 0 20px; min-width: 0; }
 .km > * { min-width: 0; }
-.km h2 { margin: 0 0 8px; font-size: 1rem; }
-.km-top { display: grid; justify-items: center; gap: 6px; }
-.km-turn { margin: 0; text-align: center; display: grid; gap: 2px; }
-.km-turn small { color: var(--muted); }
-.km-act { display: grid; justify-items: center; gap: 10px; padding: 14px; border-radius: 18px; text-align: center; background: var(--white); border: 1px solid var(--line); }
-.km-act.me { border: 2px solid var(--blue); background: color-mix(in srgb, var(--blue) 7%, var(--white)); }
-.km-act p { margin: 0; }
-.km-btns { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; width: 100%; }
-.km-btns .btn { font-size: 1.15rem; padding: 14px 8px; }
-.km-btns .ok { background: var(--mint); border-color: var(--mint); }
-.km-note { margin: 0; text-align: center; color: var(--muted); font-size: .88rem; font-weight: 600; }
+.km h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+
+/* Sahne: şu an tahmin eden oyuncu */
+.km-stage { --pc: var(--blue); display: grid; gap: 14px; padding: 16px; border-radius: 24px; background: linear-gradient(155deg, color-mix(in srgb, var(--pc) 16%, var(--white)), var(--white) 70%); border: 2px solid color-mix(in srgb, var(--pc) 55%, var(--line)); box-shadow: 0 14px 30px -20px var(--pc); }
+.km-stage.me { border-color: var(--pc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--pc) 20%, transparent), 0 14px 30px -18px var(--pc); }
+.km-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; }
+.km-ring { position: relative; width: 92px; aspect-ratio: 1; display: grid; place-items: center; --c: var(--pc); }
+.km-ring.mid { --c: #e08a00; }
+.km-ring.low { --c: var(--err); animation: sf-pulse 1s ease-in-out infinite; }
+.km-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.km-ring circle { fill: none; stroke-width: 10; }
+.km-ring .track { stroke: color-mix(in srgb, var(--c) 18%, var(--white)); }
+.km-ring .bar { stroke: var(--c); stroke-linecap: round; transition: stroke-dashoffset .3s linear, stroke .3s; }
+.km-ring span { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--c); }
+.km-head .txt { display: grid; gap: 2px; }
+.km-head small { color: var(--muted); font-weight: 600; font-size: .8rem; }
+.km-head p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.35; }
+.km-head p b { color: var(--ink); font-size: 1.05rem; }
+.km-stage > .btn { justify-self: stretch; }
+.km-btns { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; }
+.km-btns .btn { font-size: 1.2rem; padding: 14px 8px; border-width: 0; color: #fff; box-shadow: 0 5px 0 rgba(0, 0, 0, .22); transition: transform .08s, box-shadow .08s; }
+.km-btns .btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0, 0, 0, .22); }
+.km-btns .no { background: #d64545; }
+.km-btns .ok { background: var(--mint); }
+.km-note { margin: 0; text-align: center; color: var(--muted); font-size: .85rem; font-weight: 600; }
 .km-hint { margin: 0; text-align: center; color: var(--muted); font-size: .85rem; }
 
-.km-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.km-card { display: grid; gap: 8px; padding: 10px; border-radius: 16px; background: var(--white); border: 2px solid var(--line); transition: transform .2s, box-shadow .2s; }
-.km-card .who { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: .85rem; min-width: 0; }
-.km-card .who span:not(.medal) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Alın bandı kartları */
+.km-grid { list-style: none; margin: 4px 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+.km-card { --cc: var(--blue); position: relative; display: grid; grid-template-rows: auto 1fr auto; border-radius: 18px; overflow: hidden; background: var(--white); border: 2px solid var(--cc); transform: rotate(var(--tilt, 0deg)); box-shadow: 0 10px 18px -12px rgba(11, 16, 51, .55); transition: transform .25s cubic-bezier(.2, .8, .3, 1.2), box-shadow .25s; }
+.km-card .top { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--cc); color: #fff; }
+.km-card .top small { font-weight: 700; font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.km-card .face { display: grid; place-items: center; align-content: center; gap: 2px; min-height: 92px; padding: 10px 8px; text-align: center; background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--cc) 14%, transparent), transparent 70%); animation: km-flip .5s ease-out; }
+.km-card .nm { font-size: clamp(1.1rem, 5.4vw, 1.4rem); line-height: 1.1; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.km-card .q { font-size: 3rem; line-height: 1; color: var(--cc); animation: km-bob 2.4s ease-in-out infinite; }
+.km-card .face > span { font-size: .75rem; font-weight: 700; color: var(--muted); }
+.km-card .foot { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-top: 1px dashed color-mix(in srgb, var(--cc) 45%, var(--line)); font-weight: 700; font-size: .82rem; min-width: 0; }
+.km-card .foot > span:not(.medal) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.km-card .av { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; color: #fff; font-style: normal; font-size: .75rem; font-weight: 800; }
 .km-card .medal { margin-left: auto; }
-.km-card .band { display: grid; justify-items: center; gap: 2px; padding: 10px 6px; border-radius: 10px; text-align: center; background: linear-gradient(#fffaf0, #fff1d6); border: 2px solid #2b2415; color: #2b2415; }
-.km-card .band small { font-size: .7rem; font-weight: 700; color: #6b5c3a; text-transform: uppercase; letter-spacing: .04em; }
-.km-card .band b { font-size: 1.05rem; line-height: 1.15; overflow-wrap: anywhere; }
-.km-card.self .band { background: repeating-linear-gradient(135deg, #e9edff, #e9edff 8px, #dce2ff 8px, #dce2ff 16px); border-style: dashed; }
-.km-card.on { border-color: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 22%, transparent); transform: translateY(-2px); }
-.km-card.done { border-color: var(--mint); }
-.km-card.left { opacity: .5; }
+.km-card.self .face { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--cc) 10%, var(--white)) 0 10px, color-mix(in srgb, var(--cc) 20%, var(--white)) 10px 20px); }
+.km-card.self::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .55) 50%, transparent 62%); background-size: 250% 100%; animation: km-shine 3.2s ease-in-out infinite; }
+.km-card.on { transform: rotate(0) translateY(-4px) scale(1.03); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cc) 30%, transparent), 0 16px 24px -12px rgba(11, 16, 51, .6); z-index: 1; }
+.km-card.done .face { opacity: .55; }
+.km-card.left { opacity: .45; filter: grayscale(.8); }
+.km-card .stamp { position: absolute; right: 8px; top: 38px; padding: 2px 10px; border: 3px solid var(--mint); border-radius: 8px; color: var(--mint); background: color-mix(in srgb, var(--white) 85%, transparent); font-weight: 800; font-size: 1.05rem; transform: rotate(-12deg); animation: km-stamp .35s cubic-bezier(.2, .9, .3, 1.4); }
 
+.km-hist h2 { font-size: .95rem; margin-bottom: 8px; }
 .km-hist ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.km-hist li { padding: 3px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--tint); }
+.km-hist li { padding: 4px 11px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--tint); }
 .km-hist li.ok { background: color-mix(in srgb, var(--mint) 22%, var(--white)); color: #146a49; }
+@media (prefers-color-scheme: dark) { .km-hist li.ok { color: #8be0bc; } }
 
-.km-over { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 10px; text-align: center; padding: 22px 14px; border-radius: 20px; background: var(--white); border: 2px solid var(--line); }
-.km-over > p { margin: 0; font-weight: 800; font-size: 1.15rem; }
-.km-trophy { font-size: 3.4rem; line-height: 1; animation: crown-bob 1.8s ease-in-out infinite; }
-.km-rank { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
-.km-rank li { display: flex; align-items: baseline; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--tint); }
-.km-rank em { margin-left: auto; font-style: normal; color: var(--muted); font-size: .9rem; text-align: right; overflow-wrap: anywhere; }
+/* Sonuç: podyum */
+.km-over { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 14px; text-align: center; padding: 22px 14px 18px; border-radius: 24px; background: linear-gradient(170deg, color-mix(in srgb, #f6c445 22%, var(--white)), var(--white) 65%); border: 2px solid color-mix(in srgb, #f6c445 55%, var(--line)); }
+.km-win { margin: 0; font-weight: 800; font-size: 1.25rem; letter-spacing: -.01em; }
+.km-podium { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: 8px; }
+.km-podium li { display: grid; justify-items: center; gap: 2px; min-width: 0; }
+.km-podium .av, .km-rest .av { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #fff; font-style: normal; font-weight: 800; border: 3px solid var(--white); box-shadow: 0 0 0 1px var(--line); }
+.km-podium b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.km-podium em { font-style: normal; font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; line-height: 1.2; }
+.km-podium .bar { width: 100%; margin-top: 6px; display: grid; place-items: start center; padding-top: 6px; border-radius: 12px 12px 0 0; background: linear-gradient(var(--tint), color-mix(in srgb, var(--blue) 18%, var(--white))); font-size: 1.7rem; }
+.km-podium .p1 .bar { height: 96px; background: linear-gradient(#ffe38a, #f6c445); }
+.km-podium .p2 .bar { height: 72px; }
+.km-podium .p3 .bar { height: 54px; }
+.km-podium .p1 .av { width: 42px; height: 42px; animation: crown-bob 1.8s ease-in-out infinite; }
+.km-rest { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
+.km-rest li { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 12px; background: var(--tint); min-width: 0; }
+.km-rest .av { width: 26px; height: 26px; font-size: .8rem; border-width: 2px; flex: none; }
+.km-rest b { white-space: nowrap; }
+.km-rest em { margin-left: auto; font-style: normal; color: var(--muted); font-size: .85rem; text-align: right; overflow-wrap: anywhere; }
 .km-confetti { position: absolute; inset: 0; pointer-events: none; }
 .km-confetti span { position: absolute; top: -12%; font-size: 1.3rem; animation: confetti-fall linear infinite; }
-@media (prefers-reduced-motion: reduce) { .km-trophy, .km-confetti span { animation: none; } }
+
+@keyframes km-flip { from { transform: rotateX(80deg); opacity: 0; } }
+@keyframes km-bob { 50% { transform: translateY(-5px) rotate(-6deg); } }
+@keyframes km-shine { from { background-position: 150% 0; } 60%, to { background-position: -50% 0; } }
+@keyframes km-stamp { from { transform: rotate(-12deg) scale(2.2); opacity: 0; } }
+@media (min-width: 560px) { .km-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .km-card, .km-card .face, .km-card .q, .km-card.self::after, .km-card .stamp, .km-ring, .km-podium .p1 .av, .km-confetti span { animation: none; } .km-card { transition: none; } }
