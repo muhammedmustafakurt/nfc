@@ -1,0 +1,81 @@
+'use client';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+const POLL_MS = 1500;
+let memPid = null; // localStorage kapalıysa en azından sayfa açıkken aynı kimlik kullanılsın
+
+// Bu telefonu tanıyan gizli kimlik; başka telefonlara gönderilmez.
+function getPid() {
+  const ok = (p) => typeof p === 'string' && /^[a-zA-Z0-9]{16,64}$/.test(p);
+  try {
+    let p = localStorage.getItem('nfc-pid');
+    if (!ok(p)) { p = crypto.randomUUID().replace(/-/g, ''); localStorage.setItem('nfc-pid', p); }
+    return p;
+  } catch {
+    return (memPid ??= crypto.randomUUID().replace(/-/g, ''));
+  }
+}
+
+// Masa odasını yoklar ve hamle gönderir. Tüm masa oyunları (Emlak Krallığı, Satranç) ortak kullanır.
+export default function useRoom({ cafe, masa, game }) {
+  const [pid, setPid] = useState(null);
+  const [room, setRoom] = useState(null);
+  const [err, setErr] = useState('');
+  const [name, setName] = useState('');
+  const [busy, setBusy] = useState(false);
+  const ver = useRef(-1);
+
+  useEffect(() => {
+    setPid(getPid());
+    try { setName(localStorage.getItem('nfc-name') || ''); } catch {}
+  }, []);
+
+  // Sürüm değiştiyse yeni durumu al; telefon arka plandayken yoklamayı atla.
+  useEffect(() => {
+    if (!pid) return;
+    let dead = false;
+    const tick = async () => {
+      if (document.hidden) return;
+      try {
+        const r = await fetch(`/api/room?cafe=${cafe}&masa=${masa}&game=${game}&pid=${pid}&v=${ver.current}`, { cache: 'no-store' });
+        const d = await r.json();
+        if (dead) return;
+        if (!r.ok) { setErr(d.error || 'Masa açılamadı.'); return; }
+        setErr('');
+        if (!d.unchanged) { ver.current = d.version; setRoom(d); }
+      } catch {
+        if (!dead) setErr('Bağlantı koptu, yeniden deneniyor…');
+      }
+    };
+    tick();
+    const id = setInterval(tick, POLL_MS);
+    return () => { dead = true; clearInterval(id); };
+  }, [pid, cafe, masa, game]);
+
+  const send = useCallback(async (type, extra = {}) => {
+    if (!pid || busy) return;
+    setBusy(true);
+    try {
+      const r = await fetch('/api/room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cafe, masa, game, pid, action: { type, ...extra } }),
+      });
+      const d = await r.json();
+      setErr(d.error && !d.seats ? d.error : '');
+      if (d.seats) { ver.current = d.version; setRoom(d); if (d.error) setErr(d.error); }
+    } catch {
+      setErr('Bağlantı koptu, tekrar deneyin.');
+    } finally {
+      setBusy(false);
+    }
+  }, [pid, busy, cafe, masa, game]);
+
+  const join = () => {
+    const n = name.trim();
+    try { localStorage.setItem('nfc-name', n); } catch {}
+    send('join', { name: n });
+  };
+
+  return { room, err, busy, name, setName, send, join };
+}

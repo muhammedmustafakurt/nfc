@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
-import { startBoard, legal, move, inCheck, hasMoves } from '@/lib/chess';
+import { useEffect, useState } from 'react';
+import { legal, inCheck, newGame, play } from '@/lib/chess';
 
 const FILES = 'abcdefgh';
 const NAME = { w: 'Beyaz', b: 'Siyah' };
 const VAL = { P: 1, N: 3, B: 3, R: 5, Q: 9, K: 0 };
 const ORDER = ['Q', 'R', 'B', 'N', 'P'];
+const IDX = [0, 1, 2, 3, 4, 5, 6, 7];
 
 // Taş silüetleri (100x100). Dolgu/çizgi rengi CSS'ten gelir; .dt çizgileri iç detaydır (göz, yarık).
 const BASE = <path d="M25 79h50a4 4 0 0 1 4 4v5H21v-5a4 4 0 0 1 4-4z" />;
@@ -22,81 +23,68 @@ function Piece({ type, color }) {
   return <svg viewBox="0 0 100 100" className={`pc pc-${color}`} aria-hidden="true">{SHAPES[type]}</svg>;
 }
 
-const fresh = () => ({ board: startBoard(), turn: 'w', sel: null, over: null, last: null, lost: { w: [], b: [] }, moves: [], hist: [] });
-
-// Rakibin aldığı taşları, bir tarafın taş farkı kadar artıyla gösterir.
-function Bar({ color, g }) {
-  // color tarafının aldığı taşlar = karşı tarafın kaybettikleri
-  const taken = [...g.lost[color === 'w' ? 'b' : 'w']].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
-  const mine = g.lost[color === 'w' ? 'b' : 'w'].reduce((s, t) => s + VAL[t], 0);
-  const theirs = g.lost[color].reduce((s, t) => s + VAL[t], 0);
-  const diff = mine - theirs;
+// Bir tarafın aldığı taşlar ve puan farkı.
+function Bar({ color, g, names }) {
+  const enemy = color === 'w' ? 'b' : 'w';
+  const taken = [...g.lost[enemy]].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
+  const diff = g.lost[enemy].reduce((s, t) => s + VAL[t], 0) - g.lost[color].reduce((s, t) => s + VAL[t], 0);
   return (
     <div className={`cx-bar${g.turn === color && !g.over ? ' on' : ''}`}>
-      <span className="cx-who"><i className={`cx-av ${color}`} />{NAME[color]}</span>
+      <span className="cx-who"><i className={`cx-av ${color}`} />{names[color]}</span>
       <span className="cx-tray" aria-label="Alınan taşlar">
-        {taken.map((t, i) => <Piece key={i} type={t} color={color === 'w' ? 'b' : 'w'} />)}
+        {taken.map((t, i) => <Piece key={i} type={t} color={enemy} />)}
       </span>
       {diff > 0 && <em className="cx-diff">+{diff}</em>}
     </div>
   );
 }
 
-export default function Chess() {
-  const [g, setG] = useState(fresh);
-  const targets = g.sel ? legal(g.board, g.sel[0], g.sel[1]) : [];
+// Tahta ve oyuncu çubukları. Tek telefonda da masada da kullanılır:
+// flip: tahtayı Siyah altta olacak şekilde çevirir; canMove: bu telefon şu an hamle yapabilir mi;
+// onMove(fy, fx, ty, tx): hamle isteği; onNew yoksa son ekranda düğme gösterilmez.
+export function ChessBoard({ g, names = NAME, flip = false, canMove = true, onMove, onNew, newLabel = 'Yeni oyun', children }) {
+  const [sel, setSel] = useState(null);
+  useEffect(() => { setSel(null); }, [g.last, g.turn]);
+
+  const targets = sel ? legal(g.board, sel[0], sel[1]) : [];
   const check = !g.over && inCheck(g.board, g.turn);
   let king = null;
   g.board.forEach((row, y) => row.forEach((p, x) => { if (p === g.turn + 'K') king = [y, x]; }));
+  const ys = flip ? [...IDX].reverse() : IDX;
+  const xs = flip ? [...IDX].reverse() : IDX;
 
   function click(y, x) {
-    if (g.over) return;
-    if (g.sel && targets.some(([a, c]) => a === y && c === x)) {
-      const [fy, fx] = g.sel;
-      const taken = g.board[y][x];
-      const board = move(g.board, fy, fx, y, x);
-      const turn = g.turn === 'w' ? 'b' : 'w';
-      let over = null;
-      if (!hasMoves(board, turn)) over = inCheck(board, turn) ? `Şah mat! ${NAME[g.turn]} kazandı.` : 'Pat: berabere.';
-      const { hist: _h, ...prev } = g;
-      setG({
-        board, turn, sel: null, over, last: [fy, fx, y, x],
-        lost: taken ? { ...g.lost, [taken[0]]: [...g.lost[taken[0]], taken[1]] } : g.lost,
-        moves: [...g.moves, `${FILES[fx]}${8 - fy}${taken ? '×' : '–'}${FILES[x]}${8 - y}`],
-        hist: [...g.hist, prev],
-      });
+    if (g.over || !canMove) return;
+    if (sel && targets.some(([a, c]) => a === y && c === x)) {
+      onMove(sel[0], sel[1], y, x);
+      setSel(null);
       return;
     }
     const p = g.board[y][x];
-    setG({ ...g, sel: p && p[0] === g.turn ? [y, x] : null });
+    setSel(p && p[0] === g.turn ? [y, x] : null);
   }
-
-  const undo = () => {
-    if (!g.hist.length) return;
-    const prev = g.hist[g.hist.length - 1];
-    setG({ ...prev, hist: g.hist.slice(0, -1) });
-  };
 
   return (
     <div className="cx">
-      <Bar color="b" g={g} />
+      <Bar color={flip ? 'w' : 'b'} g={g} names={names} />
       <div className="cx-board-wrap">
         <div className="cx-board" role="grid" aria-label="Satranç tahtası">
-          {g.board.map((row, y) => row.map((p, x) => {
+          {ys.map((y) => xs.map((x) => {
+            const p = g.board[y][x];
             const hit = targets.some(([a, c]) => a === y && c === x);
-            const sel = g.sel && g.sel[0] === y && g.sel[1] === x;
+            const isSel = sel && sel[0] === y && sel[1] === x;
             const last = g.last && ((g.last[0] === y && g.last[1] === x) || (g.last[2] === y && g.last[3] === x));
             const warn = check && king && king[0] === y && king[1] === x;
             return (
               <button
                 key={`${y}${x}`}
                 role="gridcell"
-                className={`cx-sq ${(y + x) % 2 ? 'dk' : 'lt'}${sel ? ' sel' : ''}${last ? ' last' : ''}${warn ? ' warn' : ''}`}
+                className={`cx-sq ${(y + x) % 2 ? 'dk' : 'lt'}${isSel ? ' sel' : ''}${last ? ' last' : ''}${warn ? ' warn' : ''}`}
                 onClick={() => click(y, x)}
                 aria-label={`${FILES[x]}${8 - y}${p ? `, ${NAME[p[0]]} taş` : ''}`}
               >
-                {x === 0 && <i className="cx-rank">{8 - y}</i>}
-                {y === 7 && <i className="cx-file">{FILES[x]}</i>}
+                {x === xs[0] && <i className="cx-rank">{8 - y}</i>}
+                {y === ys[7] && <i className="cx-file">{FILES[x]}</i>}
                 {p && <Piece type={p[1]} color={p[0]} />}
                 {hit && <b className={p ? 'cx-cap' : 'cx-dot'} />}
               </button>
@@ -105,21 +93,18 @@ export default function Chess() {
         </div>
         {g.over && (
           <div className="cx-over" role="status">
-            <div className="cx-trophy" aria-hidden="true">{g.over.startsWith('Pat') ? '🤝' : '🏆'}</div>
+            <div className="cx-trophy" aria-hidden="true">{g.draw ? '🤝' : '🏆'}</div>
             <p>{g.over}</p>
-            <button className="btn primary" onClick={() => setG(fresh())}>Yeni oyun</button>
+            {onNew && <button className="btn primary" onClick={onNew}>{newLabel}</button>}
           </div>
         )}
       </div>
-      <Bar color="w" g={g} />
+      <Bar color={flip ? 'b' : 'w'} g={g} names={names} />
 
       <p className={`cx-status${check ? ' warn' : ''}`} role="status">
-        {g.over ? g.over : `${NAME[g.turn]} oynuyor${check ? ' · şah!' : ''}`}
+        {g.over ? g.over : `${names[g.turn]} oynuyor${check ? ' · şah!' : ''}`}
       </p>
-      <div className="gm-row">
-        <button className="btn" onClick={undo} disabled={!g.hist.length}>Geri al</button>
-        <button className="btn" onClick={() => setG(fresh())}>Yeni oyun</button>
-      </div>
+      {children}
       {g.moves.length > 0 && (
         <ol className="cx-moves" aria-label="Hamleler">
           {g.moves.map((m, i) => <li key={i} className={i % 2 ? 'b' : 'w'}>{m}</li>)}
@@ -127,5 +112,24 @@ export default function Chess() {
       )}
       <p className="muted cx-note">Rok ve geçerken alma yok. Piyon son sıraya ulaşınca vezir olur.</p>
     </div>
+  );
+}
+
+// Tek telefonda sırayla oynanan kip.
+export default function Chess() {
+  const [s, setS] = useState(() => ({ g: newGame(), hist: [] }));
+  const onMove = (fy, fx, ty, tx) => {
+    const r = play(s.g, fy, fx, ty, tx);
+    if (!r.error) setS({ g: r, hist: [...s.hist, s.g] });
+  };
+  const reset = () => setS({ g: newGame(), hist: [] });
+  const undo = () => s.hist.length && setS({ g: s.hist[s.hist.length - 1], hist: s.hist.slice(0, -1) });
+  return (
+    <ChessBoard g={s.g} onMove={onMove} onNew={reset}>
+      <div className="gm-row">
+        <button className="btn" onClick={undo} disabled={!s.hist.length}>Geri al</button>
+        <button className="btn" onClick={reset}>Yeni oyun</button>
+      </div>
+    </ChessBoard>
   );
 }

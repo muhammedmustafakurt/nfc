@@ -27,7 +27,7 @@ export default async function TableGames({ params }) {
           <li key={g.id}>
             <div>
               <strong>{g.name}</strong>
-              <span className="muted">{g.id === 'monopoly' ? 'Masadaki herkesle, ayrı telefonlardan' : 'Tek telefonda sırayla'} · {g.players} kişi · {g.minutes} dk</span>
+              <span className="muted">Masadakilerle, ayrı telefonlardan · {g.players} kişi · {g.minutes} dk</span>
             </div>
             <Link className="btn sm primary" href={`${base}/${g.id}`}>Oyna</Link>
           </li>
