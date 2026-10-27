@@ -31,6 +31,7 @@ function Screen({ id }) {
           </svg>
           NFC Kart
         </div>
+        <span className="sample">Örnek çalışma</span>
         <div className="mid">
           <p className="cap">Ad Soyad</p>
           <div className="fl">
@@ -39,7 +40,7 @@ function Screen({ id }) {
           </div>
           <p className="sub">Havale / EFT için IBAN</p>
           <div className="fl">
-            <ul>{['TR33', '0006', '1005', '1978', '6457', '8413', '26'].map((g) => <li key={g}>{g}</li>)}</ul>
+            <ul>{['TR37', '0004', '6012', '2588', '8000', '0809', '11'].map((g) => <li key={g}>{g}</li>)}</ul>
             <b className="cb"><CopyGlyph />Kopyala</b>
           </div>
         </div>
@@ -106,6 +107,7 @@ export default function PhoneDemo() {
           </div>
         </div>
       </div>
+      <p className="ph-note">Örnek gösterimdir.</p>
       <div className="ph-tabs" role="tablist" aria-label="Kart türü">
         {TABS.map((t) => (
           <button key={t.id} role="tab" aria-selected={tab === t.id} className="ph-tab" onClick={() => setTab(t.id)}>

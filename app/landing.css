@@ -86,7 +86,9 @@
 .ph-screen.ph-iban { background: var(--blue); color: #fff; padding: 52px 14px 14px; align-items: center; text-align: center; gap: 0; }
 .ph-iban .mk { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: .78rem; opacity: .9; }
 .ph-iban .mk svg { width: 16px; height: 16px; }
+.ph-iban .sample { margin-top: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .18); font-size: .55rem; font-weight: 800; letter-spacing: .04em; }
 .ph-iban .mid { margin: auto 0; width: 100%; }
+.ph-note { margin: 0; text-align: center; font-size: .8rem; color: rgba(255, 255, 255, .75); max-width: 30ch; }
 .ph-iban .mid p { margin: 0; font-size: .7rem; font-weight: 600; color: rgba(255, 255, 255, .78); }
 .ph-iban .mid .sub { margin-top: 10px; }
 .ph-iban .cap { margin-bottom: 6px !important; }
