@@ -499,9 +499,10 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 }
 
 /* Gizli Ajanlar */
-.aj { --red: #d64545; --blue2: #2438e8; display: grid; gap: 14px; margin: 12px 0 20px; }
+.aj { --red: #d64545; --blue2: #2438e8; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin: 12px 0 20px; min-width: 0; }
+.aj > * { min-width: 0; }
 .aj h2 { margin: 0 0 6px; font-size: .95rem; }
-.aj-score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aj-score { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .aj-team { display: grid; justify-items: center; padding: 10px 6px; border-radius: 16px; background: var(--white); border: 2px solid var(--line); transition: transform .2s, box-shadow .2s; }
 .aj-team span { font-weight: 800; font-size: .9rem; }
 .aj-team b { font-size: 2.2rem; line-height: 1; }
@@ -526,8 +527,8 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .aj-form select { width: 90px; }
 
 /* Tahta 5x5 */
-.aj-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-.aj-card { position: relative; display: grid; place-items: center; aspect-ratio: 1.15; padding: 2px; border-radius: 10px; border: 2px solid #d9ccb0; background: linear-gradient(#fbf5e6, #f1e7cf); color: #2b2415; font: inherit; font-weight: 800; font-size: clamp(.58rem, 2.7vw, .86rem); line-height: 1.05; text-align: center; overflow-wrap: anywhere; hyphens: auto; cursor: pointer; transition: transform .12s, box-shadow .12s; box-shadow: 0 2px 0 #cdbf9f; }
+.aj-board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.aj-card { position: relative; display: grid; place-items: center; aspect-ratio: 1.15; padding: 2px; border-radius: 10px; border: 2px solid #d9ccb0; background: linear-gradient(#fbf5e6, #f1e7cf); color: #2b2415; font: inherit; font-weight: 800; font-size: clamp(.54rem, 2.3vw, .78rem); line-height: 1.05; text-align: center; overflow-wrap: anywhere; hyphens: auto; cursor: pointer; transition: transform .12s, box-shadow .12s; box-shadow: 0 2px 0 #cdbf9f; }
 .aj-card:disabled { cursor: default; }
 .aj-card:not(:disabled):hover { transform: translateY(-2px); }
 .aj-card.sel { border-color: var(--blue2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue2) 35%, transparent); transform: translateY(-3px); }
@@ -555,7 +556,7 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .aj-confetti { position: absolute; inset: 0; pointer-events: none; }
 .aj-confetti span { position: absolute; top: -12%; font-size: 1.3rem; animation: confetti-fall linear infinite; }
 
-.aj-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aj-teams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .aj-teams > div { padding: 10px 12px; border-radius: 14px; background: var(--white); border: 1px solid var(--line); }
 .aj-teams .r h2 { color: var(--red); } .aj-teams .b h2 { color: var(--blue2); }
 .aj-teams ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .9rem; }
