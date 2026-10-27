@@ -2,3 +2,5 @@ data/
 node_modules/
 .next/
 .env.local
+.env*
+!.env.example
