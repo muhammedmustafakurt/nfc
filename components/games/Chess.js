@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { legal, inCheck, newGame, play } from '@/lib/chess';
+import { legal, inCheck, newGame, play, ctxOf } from '@/lib/chess';
 
 const FILES = 'abcdefgh';
 const NAME = { w: 'Beyaz', b: 'Siyah' };
@@ -46,7 +46,7 @@ export function ChessBoard({ g, names = NAME, flip = false, canMove = true, onMo
   const [sel, setSel] = useState(null);
   useEffect(() => { setSel(null); }, [g.last, g.turn]);
 
-  const targets = sel ? legal(g.board, sel[0], sel[1]) : [];
+  const targets = sel ? legal(g.board, sel[0], sel[1], ctxOf(g)) : [];
   const check = !g.over && inCheck(g.board, g.turn);
   let king = null;
   g.board.forEach((row, y) => row.forEach((p, x) => { if (p === g.turn + 'K') king = [y, x]; }));
@@ -110,7 +110,7 @@ export function ChessBoard({ g, names = NAME, flip = false, canMove = true, onMo
           {g.moves.map((m, i) => <li key={i} className={i % 2 ? 'b' : 'w'}>{m}</li>)}
         </ol>
       )}
-      <p className="muted cx-note">Rok ve geçerken alma yok. Piyon son sıraya ulaşınca vezir olur.</p>
+      <p className="muted cx-note">Rok ve geçerken alma var. Piyon son sıraya ulaşınca vezir olur.</p>
     </div>
   );
 }
