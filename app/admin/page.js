@@ -16,6 +16,7 @@ export default async function AdminPage() {
         <header><Mark /></header>
         <h1>Yönetim girişi</h1>
         <Form action={adminLogin} submit="Giriş yap">
+          <label>Kullanıcı adı <input name="username" autoComplete="username" autoCapitalize="none" required /></label>
           <label>Şifre <input name="password" type="password" autoComplete="current-password" required /></label>
         </Form>
       </main>

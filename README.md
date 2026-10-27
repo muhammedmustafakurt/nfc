@@ -24,7 +24,8 @@ Eski SQLite kayıtlarını Neon'a taşımak için: `npm run db:import`.
 
 - `WHATSAPP_NUMBER`: sipariş butonlarının numarası (905xxxxxxxxx)
 - `DATABASE_URL`: Neon bağlantı adresi
-- `ADMIN_PASSWORD`: admin şifresi (mutlaka değiştirin)
+- `ADMIN_USER`: admin kullanıcı adı (varsayılan `admin`)
+- `ADMIN_PASSWORD`: admin şifresi (canlıda zorunlu; geliştirmede varsayılan `admin123`)
 - `SESSION_SECRET`: oturum imzası (boşsa DATABASE_URL'den türetilir)
 
 ## Yayına alma
