@@ -497,3 +497,68 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
   .sf-clock.low, .sf-trophy, .sf-vote, .sf-confetti span { animation: none; }
   .sf-flip .face, .sf-clock .bar { transition: none; }
 }
+
+/* Gizli Ajanlar */
+.aj { --red: #d64545; --blue2: #2438e8; display: grid; gap: 14px; margin: 12px 0 20px; }
+.aj h2 { margin: 0 0 6px; font-size: .95rem; }
+.aj-score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aj-team { display: grid; justify-items: center; padding: 10px 6px; border-radius: 16px; background: var(--white); border: 2px solid var(--line); transition: transform .2s, box-shadow .2s; }
+.aj-team span { font-weight: 800; font-size: .9rem; }
+.aj-team b { font-size: 2.2rem; line-height: 1; }
+.aj-team small { color: var(--muted); font-size: .75rem; }
+.aj-team.r { --t: var(--red); } .aj-team.b { --t: var(--blue2); }
+.aj-team span, .aj-team b { color: var(--t); }
+.aj-team.on { border-color: var(--t); box-shadow: 0 0 0 4px color-mix(in srgb, var(--t) 22%, transparent); transform: translateY(-2px); }
+.aj-team.won { background: color-mix(in srgb, var(--t) 12%, var(--white)); border-color: var(--t); }
+.aj-role { margin: 0; text-align: center; font-weight: 700; font-size: .9rem; padding: 6px 10px; border-radius: 999px; justify-self: center; }
+.aj-role.r { background: color-mix(in srgb, var(--red) 12%, var(--white)); color: var(--red); }
+.aj-role.b { background: color-mix(in srgb, var(--blue2) 12%, var(--white)); color: var(--blue2); }
+.aj-clue { display: grid; justify-items: center; gap: 2px; padding: 14px; border-radius: 18px; text-align: center; background: var(--white); border: 2px solid var(--t); --t: var(--blue2); animation: deed-in .3s cubic-bezier(.2, .8, .3, 1.2); }
+.aj-clue.r { --t: var(--red); }
+.aj-clue .lbl { color: var(--t); font-weight: 700; font-size: .85rem; }
+.aj-clue .word { font-size: clamp(1.6rem, 8vw, 2.2rem); letter-spacing: -.02em; }
+.aj-clue .word em { font-style: normal; display: inline-grid; place-items: center; min-width: 1.6em; height: 1.6em; margin-left: 6px; border-radius: 50%; background: var(--t); color: #fff; font-size: .7em; vertical-align: middle; }
+.aj-clue .word.wait { font-size: 1.1rem; color: var(--muted); }
+.aj-clue .left { color: var(--muted); font-size: .85rem; }
+.aj-note { margin: 0; text-align: center; color: var(--muted); font-weight: 600; font-size: .9rem; }
+.aj-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.aj-form input { flex: 1; min-width: 160px; }
+.aj-form select { width: 90px; }
+
+/* Tahta 5x5 */
+.aj-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.aj-card { position: relative; display: grid; place-items: center; aspect-ratio: 1.15; padding: 2px; border-radius: 10px; border: 2px solid #d9ccb0; background: linear-gradient(#fbf5e6, #f1e7cf); color: #2b2415; font: inherit; font-weight: 800; font-size: clamp(.58rem, 2.7vw, .86rem); line-height: 1.05; text-align: center; overflow-wrap: anywhere; hyphens: auto; cursor: pointer; transition: transform .12s, box-shadow .12s; box-shadow: 0 2px 0 #cdbf9f; }
+.aj-card:disabled { cursor: default; }
+.aj-card:not(:disabled):hover { transform: translateY(-2px); }
+.aj-card.sel { border-color: var(--blue2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue2) 35%, transparent); transform: translateY(-3px); }
+/* ajan şefi anahtarı: kapalı kartta renkli kenar ve köşe */
+.aj-card.key.r { border-color: var(--red); } .aj-card.key.b { border-color: var(--blue2); }
+.aj-card.key.n { border-color: #b9a77f; opacity: .85; } .aj-card.key.a { border-color: #111; background: linear-gradient(#e6e0d0, #cfc7b2); }
+.aj-card.key.r::after, .aj-card.key.b::after, .aj-card.key.a::after { content: ''; position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; }
+.aj-card.key.r::after { background: var(--red); } .aj-card.key.b::after { background: var(--blue2); } .aj-card.key.a::after { background: #111; }
+/* açılmış kartlar */
+.aj-card.rev { color: #fff; border-color: transparent; box-shadow: none; animation: aj-flip .4s ease-out; }
+.aj-card.rev.r { background: var(--red); } .aj-card.rev.b { background: var(--blue2); }
+.aj-card.rev.n { background: #cdbf9f; color: #5a4f36; } .aj-card.rev.a { background: #111; }
+.aj-card.rev span { opacity: .92; }
+.aj-card.dim:not(.rev) { opacity: .75; }
+.aj-card i { position: absolute; font-style: normal; font-size: 1.1rem; bottom: 1px; right: 3px; }
+@keyframes aj-flip { from { transform: rotateY(90deg); } }
+.aj-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+.aj-actions .sf-help { margin: 0; }
+
+.aj-over { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 10px; text-align: center; padding: 20px 14px; border-radius: 20px; background: var(--white); border: 2px solid var(--line); }
+.aj-over.r { border-color: var(--red); background: color-mix(in srgb, var(--red) 9%, var(--white)); }
+.aj-over.b { border-color: var(--blue2); background: color-mix(in srgb, var(--blue2) 9%, var(--white)); }
+.aj-over p { margin: 0; font-weight: 800; font-size: 1.1rem; }
+.aj-trophy { font-size: 3.4rem; line-height: 1; animation: crown-bob 1.8s ease-in-out infinite; }
+.aj-confetti { position: absolute; inset: 0; pointer-events: none; }
+.aj-confetti span { position: absolute; top: -12%; font-size: 1.3rem; animation: confetti-fall linear infinite; }
+
+.aj-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aj-teams > div { padding: 10px 12px; border-radius: 14px; background: var(--white); border: 1px solid var(--line); }
+.aj-teams .r h2 { color: var(--red); } .aj-teams .b h2 { color: var(--blue2); }
+.aj-teams ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .9rem; }
+.aj-teams li.gone { opacity: .45; text-decoration: line-through; }
+.aj-teams em { font-style: normal; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: var(--tint); font-size: .72rem; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .aj-card.rev, .aj-trophy, .aj-clue, .aj-confetti span { animation: none; } }

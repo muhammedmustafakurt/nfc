@@ -4,6 +4,7 @@ import Mark from '@/components/Mark';
 import MonopolyOnline from '@/components/games/MonopolyOnline';
 import ChessOnline from '@/components/games/ChessOnline';
 import SpyfallOnline from '@/components/games/SpyfallOnline';
+import AjanlarOnline from '@/components/games/AjanlarOnline';
 import { findCafe, MASA_RE } from '@/lib/rooms';
 import { GAMES } from '@/lib/games';
 
@@ -28,6 +29,7 @@ export default async function TablePlay({ params }) {
       {g.id === 'monopoly' && <MonopolyOnline cafe={slug} masa={table} />}
       {g.id === 'satranc' && <ChessOnline cafe={slug} masa={table} />}
       {g.id === 'spyfall' && <SpyfallOnline cafe={slug} masa={table} />}
+      {g.id === 'ajanlar' && <AjanlarOnline cafe={slug} masa={table} />}
       <p><Link href={`/${slug}/${table}/oyunlar`}>← Tüm oyunlar</Link></p>
     </main>
   );
