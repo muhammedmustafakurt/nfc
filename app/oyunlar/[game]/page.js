@@ -1,0 +1,30 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import Mark from '@/components/Mark';
+import Monopoly from '@/components/games/Monopoly';
+import Chess from '@/components/games/Chess';
+import Jenga from '@/components/games/Jenga';
+import { GAMES } from '@/lib/games';
+
+const VIEWS = { monopoly: Monopoly, satranc: Chess, jenga: Jenga };
+
+export async function generateMetadata({ params }) {
+  const { game } = await params;
+  const g = GAMES.find((x) => x.id === game);
+  return { title: `${g ? g.name : 'Oyun'} · NFC Kart` };
+}
+
+export default async function PlayPage({ params }) {
+  const { game } = await params;
+  const g = GAMES.find((x) => x.id === game && x.play);
+  if (!g) notFound();
+  const View = VIEWS[g.id];
+  return (
+    <main className="shell">
+      <header><Mark /></header>
+      <h1>{g.name}</h1>
+      <View />
+      <p><Link href="/oyunlar">← Tüm oyunlar</Link></p>
+    </main>
+  );
+}
