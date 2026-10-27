@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import Mark from '@/components/Mark';
 import MonopolyOnline from '@/components/games/MonopolyOnline';
 import Chess from '@/components/games/Chess';
-import Jenga from '@/components/games/Jenga';
 import { findCafe, MASA_RE } from '@/lib/rooms';
 import { GAMES } from '@/lib/games';
 
@@ -27,7 +26,6 @@ export default async function TablePlay({ params }) {
       <p className="mono-where">{biz.name} · Masa {table.replace('masa-', '')}</p>
       {g.id === 'monopoly' && <MonopolyOnline cafe={slug} masa={table} />}
       {g.id === 'satranc' && <Chess />}
-      {g.id === 'jenga' && <Jenga />}
       <p><Link href={`/${slug}/${table}/oyunlar`}>← Tüm oyunlar</Link></p>
     </main>
   );

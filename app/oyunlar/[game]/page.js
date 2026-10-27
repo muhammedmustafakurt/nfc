@@ -3,10 +3,9 @@ import { notFound } from 'next/navigation';
 import Mark from '@/components/Mark';
 import Monopoly from '@/components/games/Monopoly';
 import Chess from '@/components/games/Chess';
-import Jenga from '@/components/games/Jenga';
 import { GAMES } from '@/lib/games';
 
-const VIEWS = { monopoly: Monopoly, satranc: Chess, jenga: Jenga };
+const VIEWS = { monopoly: Monopoly, satranc: Chess };
 
 export async function generateMetadata({ params }) {
   const { game } = await params;
