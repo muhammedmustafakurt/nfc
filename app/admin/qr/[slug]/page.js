@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export default async function QrPage({ params, searchParams }) {
   if (!(await getAdmin())) redirect('/admin');
   const { slug } = await params;
-  const biz = await get('SELECT name FROM businesses WHERE slug = ?', slug);
+  const biz = await get('SELECT name FROM cafes WHERE slug = ?', slug);
   if (!biz) notFound();
   const sp = await searchParams;
   const n = Math.min(Math.max(parseInt(sp.n, 10) || 10, 1), 60);

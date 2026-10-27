@@ -17,15 +17,16 @@ export async function generateMetadata({ params }) {
 export default async function BusinessPage({ params }) {
   const { slug } = await params;
   const biz = await get('SELECT id, name, type, value FROM businesses WHERE slug = ?', slug);
-  if (!biz) notFound();
-
-  if (biz.type === 'oyun') {
+  if (!biz) {
+    // Kafe adresi (masa numarasız): yönlendirme yerine kısa bir karşılama.
+    const cafe = await get('SELECT name FROM cafes WHERE slug = ?', slug);
+    if (!cafe) notFound();
     return (
       <div className="stage">
         <div className="stage-in">
           <Mark />
           <div className="who">
-            <h1 className={biz.name.length > 22 ? 'long' : undefined}>{biz.name}</h1>
+            <h1 className={cafe.name.length > 22 ? 'long' : undefined}>{cafe.name}</h1>
             <p>Masanızdaki karekodu okutarak oyunlara katılın.</p>
           </div>
         </div>
