@@ -1,0 +1,34 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import Mark from '@/components/Mark';
+import MonopolyOnline from '@/components/games/MonopolyOnline';
+import Chess from '@/components/games/Chess';
+import Jenga from '@/components/games/Jenga';
+import { findCafe, MASA_RE } from '@/lib/rooms';
+import { GAMES } from '@/lib/games';
+
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }) {
+  const { game } = await params;
+  const g = GAMES.find((x) => x.id === game);
+  return { title: `${g ? g.name : 'Oyun'} · NFC Kart` };
+}
+
+export default async function TablePlay({ params }) {
+  const { slug, table, game } = await params;
+  const g = GAMES.find((x) => x.id === game && x.play);
+  const biz = await findCafe(slug);
+  if (!g || !biz || !MASA_RE.test(table)) notFound();
+  return (
+    <main className={`shell${g.id === 'monopoly' ? ' game-board' : ''}`}>
+      <header><Mark /></header>
+      <h1>{g.name}</h1>
+      <p className="mono-where">{biz.name} · Masa {table.replace('masa-', '')}</p>
+      {g.id === 'monopoly' && <MonopolyOnline cafe={slug} masa={table} />}
+      {g.id === 'satranc' && <Chess />}
+      {g.id === 'jenga' && <Jenga />}
+      <p><Link href={`/${slug}/${table}/oyunlar`}>← Tüm oyunlar</Link></p>
+    </main>
+  );
+}

@@ -82,6 +82,7 @@ export default async function AdminPage() {
                         label={b.email ? 'Hesabı sıfırla' : 'Yeni kod ver'}
                         title="Yeni referans kodu üretir; hesap varsa sıfırlar (ad ve bilgi korunur)"
                       />{' '}
+                      {b.type === 'oyun' && <a className="btn sm" href={`/admin/qr/${b.slug}`} target="_blank">Masa karekodları</a>}{' '}
                       <form action={deleteBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm danger">Sil</button></form>
                     </td>
                   </tr>

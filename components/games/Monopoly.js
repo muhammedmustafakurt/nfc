@@ -27,8 +27,9 @@ function Die({ n, i }) {
   );
 }
 
-export default function Monopoly() {
-  const [g, setG] = useState(null);
+// Oyun ekranı: yalnızca g (oyun durumu) ve hamle işleyicilerini alır; tek telefon ve masa (çok oyunculu) kipinde ortak kullanılır.
+// meIdx: bu telefondaki oyuncunun sırası (tek telefonda null); canAct: şu an hamle yapabilir mi.
+export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, onNew, newLabel = 'Yeni oyun' }) {
   const [shown, setShown] = useState([]); // ekranda görünen taş konumları (adım adım ilerler)
   const [hop, setHop] = useState(null);
   const [deltas, setDeltas] = useState({});
@@ -65,24 +66,6 @@ export default function Monopoly() {
     if (!g) { setLog([]); return; }
     setLog((l) => (l[0] === g.msg ? l : [g.msg, ...l].slice(0, 6)));
   }, [g]);
-
-  if (!g) {
-    return (
-      <div className="mono-start">
-        <div className="mono-crown" aria-hidden="true">👑</div>
-        <p>Mülkleri al, kira topla, rakiplerini iflas ettir. Aynı telefonda sırayla oynanır.</p>
-        <p className="mono-ask">Kaç kişisiniz?</p>
-        <div className="gm-row">
-          {[2, 3, 4].map((n) => (
-            <button key={n} className="btn primary mono-n" onClick={() => setG(newGame(n))}>
-              <span className="mono-dots">{Array.from({ length: n }, (_, k) => <i key={k} style={{ background: COLORS[k] }} />)}</span>
-              {n} kişi
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   const moving = shown.length === g.players.length && g.players.some((p, i) => shown[i] !== p.pos);
   const cur = g.players[g.turn];
@@ -121,7 +104,7 @@ export default function Monopoly() {
             <>
               <div className="mono-win" aria-hidden="true">🏆</div>
               <p className="mono-msg" role="status">{g.msg}</p>
-              <button className="btn primary" onClick={() => setG(null)}>Yeni oyun</button>
+              <button className="btn primary" onClick={onNew}>{newLabel}</button>
             </>
           ) : (
             <>
@@ -139,18 +122,19 @@ export default function Monopoly() {
               <p className="mono-msg" role="status">
                 {moving ? `${cur.name} ilerliyor…` : g.msg}
               </p>
+              {!moving && !canAct && meIdx !== null && <p className="mono-wait">{cur.name} oynuyor, bekleyin…</p>}
               {g.dice && (
                 <div className="mono-dice" key={`${g.dice}${g.turn}${g.phase}`} aria-label={`Zar: ${g.dice[0]} ve ${g.dice[1]}`}>
                   <Die n={g.dice[0]} i={0} /><Die n={g.dice[1]} i={1} />
                 </div>
               )}
               {g.phase === 'roll' && (
-                <button className="btn primary mono-act" disabled={moving} onClick={() => setG(roll(g, die(), die(), Math.floor(Math.random() * 4)))}>Zar at</button>
+                <button className="btn primary mono-act" disabled={moving || !canAct} onClick={onRoll}>Zar at</button>
               )}
               {g.phase === 'buy' && (
                 <div className="gm-row mono-act-row">
-                  <button className="btn primary mono-act" disabled={moving} onClick={() => setG(buy(g))}>Satın al</button>
-                  <button className="btn mono-act" disabled={moving} onClick={() => setG(skipBuy(g))}>Geç</button>
+                  <button className="btn primary mono-act" disabled={moving || !canAct} onClick={onBuy}>Satın al</button>
+                  <button className="btn mono-act" disabled={moving || !canAct} onClick={onSkip}>Geç</button>
                 </div>
               )}
             </>
@@ -173,8 +157,8 @@ export default function Monopoly() {
             <li key={k} className={k === g.turn && !over ? 'on' : undefined} style={{ '--pc': COLORS[k], opacity: p.out ? 0.45 : 1 }}>
               <i className="av">{k + 1}</i>
               <div className="pn">
-                <b>{p.name}</b>
-                <span>{p.out ? 'İflas etti' : k === g.turn && !over ? 'Sıra sizde' : `${mine.length} mülk`}</span>
+                <b>{p.name}{k === meIdx ? ' (sen)' : ''}</b>
+                <span>{p.out ? 'Oyunda değil' : k === g.turn && !over ? (meIdx === null || k === meIdx ? 'Sıra sizde' : 'Sırası geldi') : `${mine.length} mülk`}</span>
                 {mine.length > 0 && (
                   <span className="chips">
                     {mine.map((i) => <u key={i} title={TILES[i].n} style={{ background: BAND[i] }} />)}
@@ -196,5 +180,37 @@ export default function Monopoly() {
         </ul>
       )}
     </div>
+  );
+}
+
+// Tek telefonda sırayla oynanan kip.
+export default function Monopoly() {
+  const [g, setG] = useState(null);
+  if (!g) {
+    return (
+      <div className="mono-start">
+        <div className="mono-crown" aria-hidden="true">👑</div>
+        <p>Mülkleri al, kira topla, rakiplerini iflas ettir. Aynı telefonda sırayla oynanır.</p>
+        <p className="mono-ask">Kaç kişisiniz?</p>
+        <div className="gm-row">
+          {[2, 3, 4].map((n) => (
+            <button key={n} className="btn primary mono-n" onClick={() => setG(newGame(n))}>
+              <span className="mono-dots">{Array.from({ length: n }, (_, k) => <i key={k} style={{ background: COLORS[k] }} />)}</span>
+              {n} kişi
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Board
+      g={g}
+      onRoll={() => setG(roll(g, die(), die(), Math.floor(Math.random() * 4)))}
+      onBuy={() => setG(buy(g))}
+      onSkip={() => setG(skipBuy(g))}
+      onNew={() => setG(null)}
+    />
   );
 }

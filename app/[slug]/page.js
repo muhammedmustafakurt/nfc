@@ -19,6 +19,20 @@ export default async function BusinessPage({ params }) {
   const biz = await get('SELECT id, name, type, value FROM businesses WHERE slug = ?', slug);
   if (!biz) notFound();
 
+  if (biz.type === 'oyun') {
+    return (
+      <div className="stage">
+        <div className="stage-in">
+          <Mark />
+          <div className="who">
+            <h1 className={biz.name.length > 22 ? 'long' : undefined}>{biz.name}</h1>
+            <p>Masanızdaki karekodu okutarak oyunlara katılın.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (biz.value) {
     await run('UPDATE businesses SET taps = taps + 1 WHERE id = ?', biz.id);
     // Google ve Instagram kartları kart okutulunca doğrudan ilgili uygulamayı açar.

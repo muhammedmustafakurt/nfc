@@ -349,3 +349,27 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .deed-art { background: linear-gradient(#cfe9ff, var(--white)); padding: 4px 0 0; }
 .deed-svg { display: block; width: 78%; height: auto; margin: 0 auto; color: var(--ink); max-height: 64px; }
 @container (max-width: 470px) { .mono-tile .city-art { display: none; } .mono-tile.p { padding-top: 0; } }
+
+.mono-wait { font-size: .85rem; color: var(--muted); }
+.qr-form { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 12px; }
+.qr-form input { width: 90px; }
+.qr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-top: 16px; }
+.qr-card { margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: #0b1033; display: grid; justify-items: center; gap: 6px; break-inside: avoid; }
+.qr-card figcaption { font-weight: 800; font-size: 1.3rem; }
+.qr-svg svg { width: 160px; height: 160px; display: block; }
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .qr-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.mono-lobby { display: grid; gap: 14px; padding: 22px 16px; border-radius: 20px; background: linear-gradient(160deg, var(--tint), var(--white)); border: 1px solid var(--line); margin: 16px 0; }
+.mono-lobby h2 { margin: 0; font-size: 1.15rem; }
+.mono-lobby p { margin: 0; }
+.mono-seats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mono-seats li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--white); border: 1px solid var(--line); }
+.mono-seats .host { margin-left: auto; font-size: .8rem; color: var(--muted); }
+.mono-seats .av { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-style: normal; font-weight: 800; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+.mono-join { display: flex; gap: 8px; flex-wrap: wrap; }
+.mono-join input { flex: 1; min-width: 160px; }
+.mono-err { color: var(--err); font-weight: 600; }
+.mono-where { color: var(--muted); font-size: .9rem; margin: 0; }
