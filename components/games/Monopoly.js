@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import CityArt, { CITY_OF } from './CityArt';
-import { TILES, COLORS, newGame, roll, buy, skipBuy } from '@/lib/emlak';
+import { TILES, COLORS, fmt, newGame, roll, buy, skipBuy } from '@/lib/emlak';
 
 // Tahtanın kenarı boyunca 7x7 ızgarada saat yönünde yerleşim (0. kare sağ alt köşe).
 function cell(i) {
@@ -106,7 +106,7 @@ export default function Monopoly() {
               {CITY_OF[i] && <CityArt id={CITY_OF[i]} color={BAND[i]} />}
               {ICON[t.t] && <em className="ico">{ICON[t.t]}</em>}
               <span>{t.n}</span>
-              {t.price && <small>₺{t.price}</small>}
+              {t.price && <small>{fmt(t.price)}</small>}
               <div className="mono-tokens">
                 {g.players.map((p, k) => !p.out && shown[k] === i && (
                   <i key={k} className={`tok${hop === k ? ' hop' : ''}`} style={{ background: COLORS[k] }}>{k + 1}</i>
@@ -130,8 +130,8 @@ export default function Monopoly() {
                   <div className="deed-head" style={{ background: BAND[cur.pos] }}>Tapu</div>
                   <div className="deed-art"><CityArt id={CITY_OF[cur.pos]} color={BAND[cur.pos]} className="deed-svg" /></div>
                   <h3>{curTile.n}</h3>
-                  <p>Fiyat <b>₺{curTile.price}</b></p>
-                  <p>Kira <b>₺{curTile.rent}</b> <small>× sahip olunan mülk</small></p>
+                  <p>Fiyat <b>{fmt(curTile.price)}</b></p>
+                  <p>Kira <b>{fmt(curTile.rent)}</b> <small>× sahip olunan mülk</small></p>
                 </div>
               ) : (
                 <div className="mono-logo" aria-hidden="true"><span>👑</span>Emlak Krallığı</div>
@@ -182,8 +182,8 @@ export default function Monopoly() {
                 )}
               </div>
               <div className="pm">
-                ₺{p.money}
-                {deltas[k] !== undefined && <em key={`${k}${deltas[k]}${g.msg}`} className={deltas[k] > 0 ? 'up' : 'down'}>{deltas[k] > 0 ? '+' : '−'}₺{Math.abs(deltas[k])}</em>}
+                {fmt(p.money)}
+                {deltas[k] !== undefined && <em key={`${k}${deltas[k]}${g.msg}`} className={deltas[k] > 0 ? 'up' : 'down'}>{deltas[k] > 0 ? '+' : '−'}{fmt(Math.abs(deltas[k]))}</em>}
               </div>
             </li>
           );
