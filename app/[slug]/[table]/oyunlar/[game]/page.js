@@ -9,6 +9,7 @@ import VampirOnline from '@/components/games/VampirOnline';
 import TabuOnline from '@/components/games/TabuOnline';
 import KimimOnline from '@/components/games/KimimOnline';
 import CizimOnline from '@/components/games/CizimOnline';
+import BilOnline from '@/components/games/BilOnline';
 import { findCafe, MASA_RE } from '@/lib/rooms';
 import { GAMES } from '@/lib/games';
 
@@ -38,6 +39,7 @@ export default async function TablePlay({ params }) {
       {g.id === 'tabu' && <TabuOnline cafe={slug} masa={table} />}
       {g.id === 'kimim' && <KimimOnline cafe={slug} masa={table} />}
       {g.id === 'cizim' && <CizimOnline cafe={slug} masa={table} />}
+      {g.id === 'bil' && <BilOnline cafe={slug} masa={table} />}
       <p><Link href={`/${slug}/${table}/oyunlar`}>← Tüm oyunlar</Link></p>
     </main>
   );
