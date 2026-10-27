@@ -108,7 +108,7 @@ export default function KimimOnline({ cafe, masa }) {
               ))}
             </ul>
           )}
-          {seated && <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>}
+          <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>
         </section>
       ) : (
         <section className={`km-stage${myTurn ? ' me' : ''}`} style={{ '--pc': PALETTE[g.turn % PALETTE.length] }}>

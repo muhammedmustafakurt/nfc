@@ -66,7 +66,7 @@ export default function AjanlarOnline({ cafe, masa }) {
           </div>
           <div className="aj-trophy" aria-hidden="true">{over.winner === 'none' ? '🤝' : '🏆'}</div>
           <p>{over.text}</p>
-          {seated && <button className="btn primary" disabled={busy} onClick={() => { setSel(null); send('reset'); }}>Yeni tur (lobiye dön)</button>}
+          <button className="btn primary" disabled={busy} onClick={() => { setSel(null); send('reset'); }}>Yeni tur (lobiye dön)</button>
         </section>
       ) : (
         <section className={`aj-clue ${g.turn}`} role="status">

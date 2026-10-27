@@ -38,7 +38,7 @@ export default function ChessOnline({ cafe, masa }) {
         flip={color === 'b'}
         canMove={myTurn}
         onMove={(fy, fx, ty, tx) => send('move', { from: [fy, fx], to: [ty, tx] })}
-        onNew={seated ? () => send('reset') : null}
+        onNew={() => send('reset')}
         newLabel="Rövanş (lobiye dön)"
       />
       {err && <p className="mono-err" role="alert">{err}</p>}

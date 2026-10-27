@@ -130,7 +130,7 @@ export default function SpyfallOnline({ cafe, masa }) {
             <div><Avatar i={over.spy} name={names[over.spy]} size="lg" /><span>Casus</span><b>{names[over.spy]}</b></div>
             <div><i className="sf-pin" aria-hidden="true">{LOCATIONS[over.loc].icon}</i><span>Mekân</span><b>{LOCATIONS[over.loc].name}</b></div>
           </div>
-          {seated && <button className="btn primary" disabled={busy} onClick={() => { setShow(false); setPick(null); send('reset'); }}>Yeni tur (lobiye dön)</button>}
+          <button className="btn primary" disabled={busy} onClick={() => { setShow(false); setPick(null); send('reset'); }}>Yeni tur (lobiye dön)</button>
         </section>
       )}
 

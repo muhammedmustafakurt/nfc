@@ -29,7 +29,7 @@ export default function MonopolyOnline({ cafe, masa }) {
         onRoll={() => send('roll')}
         onBuy={() => send('buy')}
         onSkip={() => send('skip')}
-        onNew={() => (seated ? send('reset') : null)}
+        onNew={() => send('reset')}
         newLabel={seated ? 'Yeni oyun (lobiye dön)' : 'Oyun bitti'}
       />
       {err && <p className="mono-err" role="alert">{err}</p>}

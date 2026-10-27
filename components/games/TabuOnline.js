@@ -79,7 +79,7 @@ export default function TabuOnline({ cafe, masa }) {
           </div>
           <div className="tb-trophy" aria-hidden="true">{over.winner === 'none' ? '🤝' : '🏆'}</div>
           <p>{over.text}</p>
-          {seated && <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>}
+          <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>
         </section>
       ) : (
         <>

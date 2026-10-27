@@ -62,7 +62,7 @@ export default function VampirOnline({ cafe, masa }) {
         <section className={`vp-over ${over.winner}`} role="status">
           <div className="vp-trophy" aria-hidden="true">{over.winner === 'village' ? '🏆' : over.winner === 'vampires' ? '🧛' : '🤝'}</div>
           <p>{over.text}</p>
-          {seated && <button className="btn primary" disabled={busy} onClick={() => { setShow(false); send('reset'); }}>Yeni tur (lobiye dön)</button>}
+          <button className="btn primary" disabled={busy} onClick={() => { setShow(false); send('reset'); }}>Yeni tur (lobiye dön)</button>
         </section>
       )}
 

@@ -28,13 +28,9 @@ export default function Lobby({ masaNo, room, ui, max, min, seatNote }) {
         </div>
       ) : (
         <>
-          {room.me === 0 ? (
-            <button className="btn primary" disabled={busy || room.seats.length < min} onClick={() => send('start')}>
-              {room.seats.length < min ? `En az ${min} kişi gerekli` : 'Oyunu başlat'}
-            </button>
-          ) : (
-            <p className="muted">Masayı açan kişinin oyunu başlatması bekleniyor…</p>
-          )}
+          <button className="btn primary" disabled={busy || room.seats.length < min} onClick={() => send('start')}>
+            {room.seats.length < min ? `En az ${min} kişi gerekli` : 'Oyunu başlat'}
+          </button>
           <button className="btn sm" disabled={busy} onClick={() => send('leave')}>Masadan ayrıl</button>
         </>
       )}
