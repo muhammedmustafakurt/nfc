@@ -5,7 +5,7 @@ const POLL_MS = 1500;
 let memPid = null; // localStorage kapalıysa en azından sayfa açıkken aynı kimlik kullanılsın
 
 // Bu telefonu tanıyan gizli kimlik; başka telefonlara gönderilmez.
-function getPid() {
+export function getPid() {
   const ok = (p) => typeof p === 'string' && /^[a-zA-Z0-9]{16,64}$/.test(p);
   try {
     let p = localStorage.getItem('nfc-pid');

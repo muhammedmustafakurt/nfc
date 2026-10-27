@@ -897,3 +897,9 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 @keyframes bb-shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
 @media (min-width: 560px) { .bb-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .bb-prog li.now, .bb-q.low .clock span, .bb-q .verdict, .bb-opt.right, .bb-opt.wrong, .bb-track em { animation: none; } .bb-q .fill, .bb-track .bar i, .bb-opt { transition: none; } }
+
+/* Masayı sıfırdan kur */
+.rt { display: grid; justify-items: start; gap: 8px; margin: 18px 0 10px; padding: 12px 14px; border-radius: 14px; border: 1px dashed var(--line); color: var(--muted); font-size: .88rem; }
+.rt p { margin: 0; }
+.rt-ask { display: grid; gap: 8px; }
+.rt-ask div { display: flex; flex-wrap: wrap; gap: 8px; }
