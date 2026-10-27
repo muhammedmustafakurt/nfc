@@ -99,6 +99,7 @@
 .ph-iban .cb svg { width: 15px; height: 15px; }
 .ph-iban .ft { margin: 0; padding-top: 10px; width: 100%; border-top: 1px solid rgba(255, 255, 255, .22); font-size: .6rem; color: rgba(255, 255, 255, .8); }
 .ph-iban .ft u { color: #fff; font-weight: 700; text-underline-offset: 3px; }
+.ph-google strong.long { font-size: 1.15rem; line-height: 1.15; letter-spacing: -.01em; }
 .ph-google .stars { font-size: 2rem; letter-spacing: 4px; color: #f5a400; margin: 14px 0; }
 .ph-google i { background: var(--blue); color: #fff; }
 .ph-insta { align-items: center; text-align: center; }

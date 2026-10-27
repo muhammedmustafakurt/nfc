@@ -50,7 +50,7 @@ function Screen({ id }) {
   if (id === 'google') {
     return (
       <div className="ph-screen ph-google">
-        <strong>Resul Giyim</strong>
+        <strong className="long">Teknoloji ve Bilişim Hizmetleri Anonim Şirketi</strong>
         <span>Deneyiminizi puanlayın</span>
         <div className="stars" aria-hidden="true">{'★★★★★'}</div>
         <i>Yorum yaz</i>
