@@ -227,3 +227,17 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
   .btn, input, select { min-height: 48px; }
   .btn.sm { min-height: 40px; }
 }
+
+/* ---------- yöneticiler ---------- */
+.who-bar { display: flex; align-items: center; gap: 12px; }
+.who-bar .muted { margin: 0; font-size: .9rem; }
+.admin-list { list-style: none; margin: 0 0 24px; padding: 0; }
+.admin-list li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-weight: 600; }
+.admin-list li:last-child { border-bottom: 1px solid var(--line); }
+.panel-box h3 { font-size: 1rem; margin: 24px 0 12px; }
+
+/* ---------- bir kez gösterilen referans kodu ---------- */
+.once-code { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--tint); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.once-code code { font-size: 1.05rem; background: var(--white); }
+.once-code.row-code { margin-top: 8px; font-size: .85rem; white-space: normal; }
+.muted-dash { color: var(--muted); }

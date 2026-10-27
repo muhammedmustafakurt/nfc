@@ -1,8 +1,11 @@
 import Form from '@/components/Form';
-import CopyButton from '@/components/CopyButton';
+import ResetBusiness from '@/components/ResetBusiness';
 import Mark from '@/components/Mark';
-import { adminLogin, adminLogout, createBusiness, deleteBusiness, resetBusiness } from '@/lib/actions';
-import { getSession } from '@/lib/auth';
+import {
+  adminLogin, adminLogout, createBusiness, deleteBusiness, resetBusiness,
+  createAdmin, deleteAdmin, resetAdminPassword, changeOwnPassword,
+} from '@/lib/actions';
+import { getAdmin } from '@/lib/auth';
 import { all } from '@/lib/db';
 import { TYPES } from '@/lib/types';
 
@@ -10,7 +13,8 @@ export const metadata = { title: 'Yönetim · NFC Kart' };
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
-  if ((await getSession('admin')) !== 'admin') {
+  const admin = await getAdmin();
+  if (!admin) {
     return (
       <main className="shell">
         <header><Mark /></header>
@@ -23,15 +27,19 @@ export default async function AdminPage() {
     );
   }
 
-  const list = await all('SELECT id, slug, name, type, value, taps, ref_code, email FROM businesses ORDER BY id DESC');
+  const list = await all('SELECT id, slug, name, type, value, taps, email FROM businesses ORDER BY id DESC');
+  const admins = admin.main ? await all('SELECT id, username FROM admins ORDER BY id') : [];
   return (
     <main className="shell wide">
       <header>
         <Mark />
-        <form action={adminLogout}><button className="btn sm">Çıkış yap</button></form>
+        <div className="who-bar">
+          <span className="muted">{admin.username}{admin.main ? ' (ana admin)' : ''}</span>
+          <form action={adminLogout}><button className="btn sm">Çıkış yap</button></form>
+        </div>
       </header>
       <h1>Kartlar</h1>
-      <p className="lead">Satılan her kart için bir kayıt açın, çıkan referans kodunu müşteriye verin. Adres, karta yazacağınız linktir.</p>
+      <p className="lead">Satılan her kart için bir kayıt açın, çıkan referans kodunu müşteriye verin. Kod güvenlik için yalnızca üretildiği anda görünür; kaybolursa "Yeni kod ver" deyin. Adres, karta yazacağınız linktir.</p>
 
       <section className="panel-box">
         <h2>Yeni kart</h2>
@@ -60,12 +68,17 @@ export default async function AdminPage() {
                     <td data-label="İşletme"><strong>{b.name}</strong></td>
                     <td data-label="Tür">{TYPES[b.type]?.label}</td>
                     <td data-label="Adres"><a href={`/${b.slug}`} target="_blank">/{b.slug}</a></td>
-                    <td data-label="Referans kodu">{b.email ? <span className="pill">kullanıldı</span> : <><code>{b.ref_code}</code> <CopyButton text={b.ref_code} label="Kopyala" /></>}</td>
-                    <td data-label="Hesap">{b.email || <span className="pill">kayıt bekliyor</span>}</td>
+                    <td data-label="Referans kodu">{b.email ? <span className="pill">kullanıldı</span> : <span className="pill">kayıt bekliyor</span>}</td>
+                    <td data-label="Hesap">{b.email || <span className="muted-dash">—</span>}</td>
                     <td data-label="Bilgi">{b.value ? <span className="pill on">eklendi</span> : <span className="pill">yok</span>}</td>
                     <td data-label="Okutma">{b.taps}</td>
                     <td className="actions">
-                      {b.email && <form action={resetBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm" title="Yeni referans kodu verir ve hesabı sıfırlar">Sıfırla</button></form>}{' '}
+                      <ResetBusiness
+                        action={resetBusiness}
+                        id={b.id}
+                        label={b.email ? 'Hesabı sıfırla' : 'Yeni kod ver'}
+                        title="Yeni referans kodu üretir; hesap varsa sıfırlar (ad ve bilgi korunur)"
+                      />{' '}
                       <form action={deleteBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm danger">Sil</button></form>
                     </td>
                   </tr>
@@ -75,6 +88,55 @@ export default async function AdminPage() {
           </div>
         )}
       </section>
+
+      {admin.main ? (
+        <section className="panel-box">
+          <h2>Yöneticiler ({admins.length + 1})</h2>
+          <p className="lead">Ana admin (<strong>{admin.username}</strong>) ortam değişkenlerinden gelir ve silinemez. Eklediğiniz yöneticiler kart oluşturup yönetebilir; yönetici ekleyip silemezler.</p>
+          {admins.length > 0 && (
+            <ul className="admin-list">
+              {admins.map((a) => (
+                <li key={a.id}>
+                  <span>{a.username}</span>
+                  <form action={deleteAdmin}><input type="hidden" name="id" value={a.id} /><button className="btn sm danger">Sil</button></form>
+                </li>
+              ))}
+            </ul>
+          )}
+          <h3>Yeni yönetici</h3>
+          <Form action={createAdmin} submit="Yönetici ekle">
+            <div className="row">
+              <label>Kullanıcı adı <input name="username" autoComplete="off" autoCapitalize="none" required minLength={3} maxLength={32} /></label>
+              <label>Şifre (en az 8 karakter) <input name="password" type="password" autoComplete="new-password" required minLength={8} /></label>
+            </div>
+          </Form>
+          {admins.length > 0 && (
+            <>
+              <h3>Şifre sıfırla</h3>
+              <Form action={resetAdminPassword} submit="Şifreyi değiştir">
+                <div className="row">
+                  <label>Yönetici
+                    <select name="id" defaultValue={admins[0].id}>
+                      {admins.map((a) => <option key={a.id} value={a.id}>{a.username}</option>)}
+                    </select>
+                  </label>
+                  <label>Yeni şifre <input name="password" type="password" autoComplete="new-password" required minLength={8} /></label>
+                </div>
+              </Form>
+            </>
+          )}
+        </section>
+      ) : (
+        <section className="panel-box">
+          <h2>Şifremi değiştir</h2>
+          <Form action={changeOwnPassword} submit="Şifreyi değiştir">
+            <div className="row">
+              <label>Mevcut şifre <input name="current" type="password" autoComplete="current-password" required /></label>
+              <label>Yeni şifre (en az 8 karakter) <input name="password" type="password" autoComplete="new-password" required minLength={8} /></label>
+            </div>
+          </Form>
+        </section>
+      )}
     </main>
   );
 }

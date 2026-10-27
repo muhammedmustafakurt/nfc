@@ -20,13 +20,21 @@ Eski SQLite kayıtlarını Neon'a taşımak için: `npm run db:import`.
 4. `/panel`: işletme adını ve kart bilgisini (IBAN, Google linki, Instagram, WhatsApp) günceller.
 5. Kart okutulunca: IBAN kartı sayfayı gösterir; diğer türler doğrudan ilgili uygulamaya yönlendirir.
 
+## Yöneticiler
+
+Ana admin `ADMIN_USER` / `ADMIN_PASSWORD` ile girer ve silinemez. Ana admin, panelde "Yöneticiler"
+bölümünden ek yönetici ekler, siler, şifrelerini sıfırlar. Ek yöneticiler kart oluşturup yönetebilir,
+yönetici ekleyemez; kendi şifrelerini panelden değiştirebilir.
+
 ## Ortam değişkenleri
 
 - `WHATSAPP_NUMBER`: sipariş butonlarının numarası (905xxxxxxxxx)
 - `DATABASE_URL`: Neon bağlantı adresi
 - `ADMIN_USER`: admin kullanıcı adı (varsayılan `admin`)
-- `ADMIN_PASSWORD`: admin şifresi (canlıda zorunlu; geliştirmede varsayılan `admin123`)
-- `SESSION_SECRET`: oturum imzası (boşsa DATABASE_URL'den türetilir)
+- `ADMIN_PASSWORD_HASH`: ana admin şifresinin özeti (önerilen). `.\scripts\hash-password.ps1` ile üretilir.
+- `ADMIN_PASSWORD`: ana admin şifresi, düz metin (özet yoksa kullanılır; canlıda ikisinden biri zorunlu, geliştirmede varsayılan `admin123`)
+- `SESSION_SECRET`: oturum imzası ve referans kodu özeti için anahtar (boşsa DATABASE_URL'den türetilir).
+  **Canlıda sabit bir değer verin ve sonradan değiştirmeyin:** değişirse kullanılmamış referans kodları geçersiz olur.
 
 ## Yayına alma
 
