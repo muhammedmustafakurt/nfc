@@ -8,7 +8,6 @@ import {
 import { getAdmin } from '@/lib/auth';
 import { all } from '@/lib/db';
 import { TYPES } from '@/lib/types';
-import { GAMES } from '@/lib/games';
 
 export const metadata = { title: 'Yönetim · NFC Kart' };
 export const dynamic = 'force-dynamic';
@@ -29,8 +28,6 @@ export default async function AdminPage() {
   }
 
   const list = await all('SELECT id, slug, name, type, value, taps, email FROM businesses ORDER BY id DESC');
-  const votes = new Map((await all('SELECT game, votes FROM game_votes')).map((v) => [v.game, v.votes]));
-  const ranking = GAMES.map((g) => ({ ...g, votes: votes.get(g.id) || 0 })).sort((a, b) => b.votes - a.votes);
   const admins = admin.main ? await all('SELECT id, username FROM admins ORDER BY id') : [];
   return (
     <main className="shell wide">
@@ -91,14 +88,6 @@ export default async function AdminPage() {
             </table>
           </div>
         )}
-      </section>
-
-      <section className="panel-box">
-        <h2>Masa oyunu talebi</h2>
-        <p className="lead">Ziyaretçilerin <a href="/oyunlar" target="_blank">/oyunlar</a> sayfasında verdiği oylar.</p>
-        <ul className="admin-list">
-          {ranking.map((g) => <li key={g.id}><span>{g.name}</span><span className="pill on">{g.votes} oy</span></li>)}
-        </ul>
       </section>
 
       {admin.main ? (
