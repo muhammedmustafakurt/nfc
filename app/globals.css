@@ -652,3 +652,46 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .tb-confetti { position: absolute; inset: 0; pointer-events: none; }
 .tb-confetti span { position: absolute; top: -12%; font-size: 1.3rem; animation: confetti-fall linear infinite; }
 @media (prefers-reduced-motion: reduce) { .tb-card, .tb-trophy, .tb-confetti span { animation: none; } }
+
+/* Ben Kimim? */
+.km { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin: 12px 0 20px; min-width: 0; }
+.km > * { min-width: 0; }
+.km h2 { margin: 0 0 8px; font-size: 1rem; }
+.km-top { display: grid; justify-items: center; gap: 6px; }
+.km-turn { margin: 0; text-align: center; display: grid; gap: 2px; }
+.km-turn small { color: var(--muted); }
+.km-act { display: grid; justify-items: center; gap: 10px; padding: 14px; border-radius: 18px; text-align: center; background: var(--white); border: 1px solid var(--line); }
+.km-act.me { border: 2px solid var(--blue); background: color-mix(in srgb, var(--blue) 7%, var(--white)); }
+.km-act p { margin: 0; }
+.km-btns { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; width: 100%; }
+.km-btns .btn { font-size: 1.15rem; padding: 14px 8px; }
+.km-btns .ok { background: var(--mint); border-color: var(--mint); }
+.km-note { margin: 0; text-align: center; color: var(--muted); font-size: .88rem; font-weight: 600; }
+.km-hint { margin: 0; text-align: center; color: var(--muted); font-size: .85rem; }
+
+.km-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.km-card { display: grid; gap: 8px; padding: 10px; border-radius: 16px; background: var(--white); border: 2px solid var(--line); transition: transform .2s, box-shadow .2s; }
+.km-card .who { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: .85rem; min-width: 0; }
+.km-card .who span:not(.medal) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.km-card .medal { margin-left: auto; }
+.km-card .band { display: grid; justify-items: center; gap: 2px; padding: 10px 6px; border-radius: 10px; text-align: center; background: linear-gradient(#fffaf0, #fff1d6); border: 2px solid #2b2415; color: #2b2415; }
+.km-card .band small { font-size: .7rem; font-weight: 700; color: #6b5c3a; text-transform: uppercase; letter-spacing: .04em; }
+.km-card .band b { font-size: 1.05rem; line-height: 1.15; overflow-wrap: anywhere; }
+.km-card.self .band { background: repeating-linear-gradient(135deg, #e9edff, #e9edff 8px, #dce2ff 8px, #dce2ff 16px); border-style: dashed; }
+.km-card.on { border-color: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 22%, transparent); transform: translateY(-2px); }
+.km-card.done { border-color: var(--mint); }
+.km-card.left { opacity: .5; }
+
+.km-hist ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.km-hist li { padding: 3px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--tint); }
+.km-hist li.ok { background: color-mix(in srgb, var(--mint) 22%, var(--white)); color: #146a49; }
+
+.km-over { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 10px; text-align: center; padding: 22px 14px; border-radius: 20px; background: var(--white); border: 2px solid var(--line); }
+.km-over > p { margin: 0; font-weight: 800; font-size: 1.15rem; }
+.km-trophy { font-size: 3.4rem; line-height: 1; animation: crown-bob 1.8s ease-in-out infinite; }
+.km-rank { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
+.km-rank li { display: flex; align-items: baseline; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--tint); }
+.km-rank em { margin-left: auto; font-style: normal; color: var(--muted); font-size: .9rem; text-align: right; overflow-wrap: anywhere; }
+.km-confetti { position: absolute; inset: 0; pointer-events: none; }
+.km-confetti span { position: absolute; top: -12%; font-size: 1.3rem; animation: confetti-fall linear infinite; }
+@media (prefers-reduced-motion: reduce) { .km-trophy, .km-confetti span { animation: none; } }

@@ -4,7 +4,7 @@ import { findCafe, readRoom, mutate, view, ROOM_GAMES, MASA_RE, PID_RE } from '@
 export const dynamic = 'force-dynamic';
 
 const json = (body, status = 200) => NextResponse.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
-const ACTIONS = new Set(['join', 'leave', 'start', 'roll', 'buy', 'skip', 'move', 'accuse', 'vote', 'guess', 'timeout', 'clue', 'pick', 'endturn', 'kill', 'protect', 'inspect', 'begin', 'right', 'pass', 'taboo', 'reset']);
+const ACTIONS = new Set(['join', 'leave', 'start', 'roll', 'buy', 'skip', 'move', 'accuse', 'vote', 'guess', 'timeout', 'clue', 'pick', 'endturn', 'kill', 'protect', 'inspect', 'begin', 'right', 'pass', 'taboo', 'kok', 'kno', 'kskip', 'ktimeout', 'reset']);
 
 async function resolve({ cafe, masa, game, pid }) {
   if (!/^[a-z0-9-]{1,50}$/.test(String(cafe)) || !MASA_RE.test(String(masa)) || !ROOM_GAMES.has(game) || !PID_RE.test(String(pid))) {
