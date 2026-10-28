@@ -24,6 +24,19 @@ export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const ver = useRef(-1);
+  const geo = useRef(null); // kafe konum kontrolü yapıyorsa telefonun son konumu
+
+  // Kafe konum kontrolü açıksa konumu izler; kafeden uzaklaşan oyuncu masadan düşer.
+  const locked = !!room?.locked;
+  useEffect(() => {
+    if (!locked || !navigator.geolocation) return;
+    const id = navigator.geolocation.watchPosition(
+      (p) => { geo.current = { lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }; },
+      () => { geo.current = null; },
+      { maximumAge: 30000, timeout: 20000 },
+    );
+    return () => navigator.geolocation.clearWatch(id);
+  }, [locked]);
 
   useEffect(() => {
     setPid(getPid());
@@ -61,7 +74,7 @@ export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
       fetch('/api/room', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cafe, masa, game, pid, action: { type: 'ping' } }),
+        body: JSON.stringify({ cafe, masa, game, pid, action: { type: 'ping', ...(geo.current && { geo: geo.current }) } }),
       }).catch(() => {});
     }, 20000);
     return () => clearInterval(id);
@@ -74,7 +87,7 @@ export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
       const r = await fetch('/api/room', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cafe, masa, game, pid, action: { type, ...extra } }),
+        body: JSON.stringify({ cafe, masa, game, pid, action: { type, ...(geo.current && { geo: geo.current }), ...extra } }),
       });
       const d = await r.json();
       setErr(d.error && !d.seats ? d.error : '');
@@ -86,9 +99,17 @@ export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
     }
   }, [pid, busy, cafe, masa, game]);
 
-  const join = () => {
+  const join = async () => {
     const n = name.trim();
     try { localStorage.setItem('nfc-name', n); } catch {}
+    // Konum kontrolü açıksa ilk konum alınana kadar kısa süre beklenir.
+    if (room?.locked && !geo.current && navigator.geolocation) {
+      await new Promise((done) => navigator.geolocation.getCurrentPosition(
+        (p) => { geo.current = { lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }; done(); },
+        () => done(),
+        { timeout: 8000, maximumAge: 60000 },
+      ));
+    }
     send('join', { name: n });
   };
 

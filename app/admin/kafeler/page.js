@@ -1,5 +1,6 @@
 import Form from '@/components/Form';
 import Mark from '@/components/Mark';
+import CafeLocation from '@/components/CafeLocation';
 import { createCafe, deleteCafe, adminLogout } from '@/lib/actions';
 import { getAdmin } from '@/lib/auth';
 import { all } from '@/lib/db';
@@ -13,7 +14,7 @@ export default async function CafesPage() {
   const admin = await getAdmin();
   if (!admin) redirect('/admin');
 
-  const cafes = await all('SELECT id, slug, name FROM cafes ORDER BY id DESC');
+  const cafes = await all('SELECT id, slug, name, lat, lng FROM cafes ORDER BY id DESC');
   const rooms = await all('SELECT biz_id, COUNT(*) AS n FROM game_rooms GROUP BY biz_id');
   const roomCount = new Map(rooms.map((r) => [r.biz_id, Number(r.n)]));
 
@@ -63,6 +64,19 @@ export default async function CafesPage() {
           </div>
         )}
       </section>
+
+      {cafes.length > 0 && (
+        <section className="panel-box">
+          <h2>Konum kontrolü</h2>
+          <p className="lead" style={{ margin: 0 }}>Konum girilen kafede masaya yalnızca kafenin yakınındaki (yaklaşık 250 m) telefonlar katılabilir; kafeden uzaklaşan oyuncu masadan düşer. Bu sayfayı kafedeyken açıp "Şu anki konumumu kullan"a basın. Boş bırakırsanız kontrol kapanır.</p>
+          {cafes.map((c) => (
+            <div key={c.id}>
+              <h3>{c.name} {c.lat == null ? <small className="muted">· kontrol kapalı</small> : <small className="muted">· kontrol açık</small>}</h3>
+              <CafeLocation id={c.id} lat={c.lat} lng={c.lng} />
+            </div>
+          ))}
+        </section>
+      )}
     </main>
   );
 }

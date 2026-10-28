@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { findCafe, readRoom, mutate, view, ROOM_GAMES, MASA_RE, PID_RE } from '@/lib/rooms';
+import { findCafe, nearCafe, readRoom, mutate, view, ROOM_GAMES, MASA_RE, PID_RE } from '@/lib/rooms';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +12,7 @@ async function resolve({ cafe, masa, game, pid }) {
   }
   const biz = await findCafe(cafe);
   if (!biz) return { err: json({ error: 'Kafe bulunamadı.' }, 404) };
-  return { biz };
+  return { biz, cafe: biz };
 }
 
 // Sürüm değişmediyse yalnızca { unchanged } döner (sık yoklama ucuz kalsın diye).
@@ -22,7 +22,7 @@ export async function GET(req) {
   if (err) return err;
   const room = await readRoom(biz.id, q.masa, q.game);
   if (String(room.version) === q.v) return json({ unchanged: true, version: room.version });
-  return json(view(room, q.pid, q.game));
+  return json({ ...view(room, q.pid, q.game), locked: biz.lat != null });
 }
 
 export async function POST(req) {
@@ -32,6 +32,6 @@ export async function POST(req) {
   if (err) return err;
   const a = body.action;
   if (!a || !ACTIONS.has(a.type)) return json({ error: 'Bilinmeyen işlem.' }, 400);
-  const res = await mutate(biz.id, body.masa, body.game, body.pid, { type: a.type, name: a.name, from: a.from, to: a.to, target: a.target, yes: a.yes, loc: a.loc, word: a.word, num: a.num, card: a.card, strokes: a.strokes, keep: a.keep, text: a.text, choice: a.choice, ms: a.ms });
-  return json({ ...view(res.room, body.pid, body.game), ...(res.error && { error: res.error }) }, res.error ? 409 : 200);
+  const res = await mutate(biz.id, body.masa, body.game, body.pid, { type: a.type, name: a.name, from: a.from, to: a.to, target: a.target, yes: a.yes, loc: a.loc, word: a.word, num: a.num, card: a.card, strokes: a.strokes, keep: a.keep, text: a.text, choice: a.choice, ms: a.ms, near: nearCafe(biz, a.geo), noGeo: !a.geo });
+  return json({ ...view(res.room, body.pid, body.game), locked: biz.lat != null, ...(res.error && { error: res.error }) }, res.error ? 409 : 200);
 }
