@@ -4,24 +4,17 @@ import Lobby from './Lobby';
 import useRoom from './useRoom';
 import { PALETTE } from '@/lib/emlak';
 import { TURN_MS } from '@/lib/kimim';
+import KimimArt from './KimimArt';
 
-const RING = 2 * Math.PI * 54;
 const MEDAL = ['🥇', '🥈', '🥉'];
 const CONFETTI = ['🎉', '✨', '🏆', '🎊', '⭐'];
 const HIST = { ok: 'buldu', no: 'yanlış bildi', skip: 'pas geçti', time: 'süresi doldu' };
-// Kart türü: renk ve simge, kartın ne olduğunu ilk bakışta anlatır.
+// Kart türü rengi; türün çizimi KimimArt dosyasında.
 const CAT = {
-  'Türk ünlü': ['⭐', '#d6336c'],
-  'Tarihten': ['🏛️', '#a8681a'],
-  'Bilim ve sanat': ['🎨', '#7048e8'],
-  'Müzik': ['🎵', '#e8590c'],
-  'Sporcu': ['⚽', '#1f9d6b'],
-  'Çizgi film': ['🐭', '#f08c00'],
-  'Film ve dizi': ['🎬', '#2438e8'],
-  'Hayvan': ['🐾', '#0c8f9c'],
-  'Meslek': ['🛠️', '#5b6080'],
+  'Türk ünlü': '#d6336c', 'Tarihten': '#a8681a', 'Bilim ve sanat': '#7048e8', 'Müzik': '#e8590c', 'Sporcu': '#1f9d6b',
+  'Çizgi film': '#e08a00', 'Film ve dizi': '#2438e8', 'Hayvan': '#0c8f9c', 'Meslek': '#5b6080',
 };
-const catOf = (c) => CAT[c] || ['❓', '#5b6080'];
+const catOf = (c) => CAT[c] || '#5b6080';
 
 // Masada Ben Kimim?: herkes başkalarının kartını görür, kendi kartını sorularla bulmaya çalışır.
 export default function KimimOnline({ cafe, masa }) {
@@ -113,12 +106,8 @@ export default function KimimOnline({ cafe, masa }) {
       ) : (
         <section className={`km-stage${myTurn ? ' me' : ''}`} style={{ '--pc': PALETTE[g.turn % PALETTE.length] }}>
           <div className="km-head">
-            <div className={`km-ring ${urgency}`} role="timer" aria-label="Kalan süre">
-              <svg viewBox="0 0 120 120" aria-hidden="true">
-                <circle className="track" cx="60" cy="60" r="54" />
-                <circle className="bar" cx="60" cy="60" r="54" strokeDasharray={RING} strokeDashoffset={RING * (1 - frac)} />
-              </svg>
-              <span>{Math.ceil(left / 1000)}</span>
+            <div className={`km-clock ${urgency}`} role="timer" aria-label="Kalan süre">
+              <b>{Math.ceil(left / 1000)}</b><small>sn</small>
             </div>
             <div className="txt">
               <small>Tur {Math.min(g.turnNo + 1, g.maxTurns)} / {g.maxTurns}</small>
@@ -126,8 +115,9 @@ export default function KimimOnline({ cafe, masa }) {
               <p>{myTurn ? 'Evet/hayır soruları sor, bildiğinde yüksek sesle söyle.' : <>Kartı sen görüyorsun: <b>{g.cards[g.turn].n}</b></>}</p>
             </div>
           </div>
+          <div className={`km-drain ${urgency}`} aria-hidden="true"><i style={{ width: `${frac * 100}%` }} /></div>
           {myTurn && (
-            <button className="btn" disabled={busy} onClick={() => send('kskip')}>Sırayı bitir</button>
+            <button className="btn km-skip" disabled={busy} onClick={() => send('kskip')}>Sırayı bitir</button>
           )}
           {!myTurn && seated && (
             <div className="km-btns">
@@ -144,14 +134,14 @@ export default function KimimOnline({ cafe, masa }) {
           const done = g.solved.includes(i);
           const self = i === me;
           const hidden = c.n === null;
-          const [icon, color] = catOf(c.c);
+          const color = catOf(c.c);
           return (
             <li
               key={i}
               className={`km-card${!over && g.turn === i ? ' on' : ''}${done ? ' done' : ''}${self && hidden ? ' self' : ''}${room.seats[i].left ? ' left' : ''}`}
               style={{ '--cc': color, '--tilt': `${i % 2 ? 1.2 : -1.2}deg` }}
             >
-              <div className="top"><span aria-hidden="true">{icon}</span><small>{c.c}</small></div>
+              <div className="top"><small>{c.c}</small><KimimArt cat={c.c} /></div>
               <div className="face" key={hidden ? 'h' : c.n}>
                 {hidden ? (
                   <>

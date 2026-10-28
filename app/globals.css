@@ -660,50 +660,53 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .km h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
 
 /* Sahne: şu an tahmin eden oyuncu */
-.km-stage { --pc: var(--blue); display: grid; gap: 14px; padding: 16px; border-radius: 24px; background: linear-gradient(155deg, color-mix(in srgb, var(--pc) 16%, var(--white)), var(--white) 70%); border: 2px solid color-mix(in srgb, var(--pc) 55%, var(--line)); box-shadow: 0 14px 30px -20px var(--pc); }
-.km-stage.me { border-color: var(--pc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--pc) 20%, transparent), 0 14px 30px -18px var(--pc); }
-.km-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; }
-.km-ring { position: relative; width: 92px; aspect-ratio: 1; display: grid; place-items: center; --c: var(--pc); }
-.km-ring.mid { --c: #e08a00; }
-.km-ring.low { --c: var(--err); animation: sf-pulse 1s ease-in-out infinite; }
-.km-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.km-ring circle { fill: none; stroke-width: 10; }
-.km-ring .track { stroke: color-mix(in srgb, var(--c) 18%, var(--white)); }
-.km-ring .bar { stroke: var(--c); stroke-linecap: round; transition: stroke-dashoffset .3s linear, stroke .3s; }
-.km-ring span { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--c); }
-.km-head .txt { display: grid; gap: 2px; }
-.km-head small { color: var(--muted); font-weight: 600; font-size: .8rem; }
-.km-head p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.35; }
-.km-head p b { color: var(--ink); font-size: 1.05rem; }
-.km-stage > .btn { justify-self: stretch; }
+.km-stage { --pc: var(--blue); display: grid; gap: 12px; padding: 18px 18px 16px; border-radius: 10px; background: var(--pc); color: #fff; }
+.km-stage.me { outline: 4px solid var(--ink); outline-offset: 3px; }
+.km-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 16px; }
+.km-clock { display: grid; justify-items: center; min-width: 76px; padding: 6px 12px 8px; border-radius: 8px; background: #fff; color: var(--pc); line-height: 1; }
+.km-clock b { font-size: 3rem; font-weight: 800; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.km-clock small { font-size: .7rem; font-weight: 700; margin-top: 2px; }
+.km-clock.mid { color: #b66a00; }
+.km-clock.low { color: var(--err); animation: sf-pulse 1s ease-in-out infinite; }
+.km-head .txt { display: grid; gap: 3px; }
+.km-head small { opacity: .8; font-weight: 600; font-size: .8rem; }
+.km-stage h2 { font-size: 1.5rem; letter-spacing: -.02em; line-height: 1.1; }
+.km-head p { margin: 0; font-size: .92rem; line-height: 1.35; opacity: .95; }
+.km-head p b { display: inline-block; margin-top: 2px; padding: 2px 10px; border-radius: 6px; background: #fff; color: var(--ink); font-size: 1.05rem; transform: rotate(-1.5deg); }
+.km-drain { height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .3); overflow: hidden; }
+.km-drain i { display: block; height: 100%; background: #fff; border-radius: 99px; transition: width .25s linear; }
+.km-drain.mid i { background: #ffd84d; }
+.km-drain.low i { background: #ff6b5b; }
 .km-btns { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; }
-.km-btns .btn { font-size: 1.2rem; padding: 14px 8px; border-width: 0; color: #fff; box-shadow: 0 5px 0 rgba(0, 0, 0, .22); transition: transform .08s, box-shadow .08s; }
-.km-btns .btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0, 0, 0, .22); }
-.km-btns .no { background: #d64545; }
-.km-btns .ok { background: var(--mint); }
-.km-note { margin: 0; text-align: center; color: var(--muted); font-size: .85rem; font-weight: 600; }
+.km-btns .btn { font-size: 1.25rem; font-weight: 800; padding: 15px 8px; border: 0; border-radius: 8px; color: #fff; box-shadow: 0 5px 0 rgba(0, 0, 0, .3); transition: transform .08s, box-shadow .08s; }
+.km-btns .btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+.km-btns .no { background: #c92a2a; }
+.km-btns .ok { background: #12805a; }
+.km-stage .km-skip { justify-self: stretch; background: #fff; color: var(--ink); border: 0; font-weight: 800; box-shadow: 0 4px 0 rgba(0, 0, 0, .3); }
+.km-note { margin: 0; text-align: center; font-size: .85rem; font-weight: 600; opacity: .9; }
 .km-hint { margin: 0; text-align: center; color: var(--muted); font-size: .85rem; }
 
-/* Alın bandı kartları */
+/* Alın bandı kartları: düz renkli oyun kartları */
 .km-grid { list-style: none; margin: 4px 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
-.km-card { --cc: var(--blue); position: relative; display: grid; grid-template-rows: auto 1fr auto; border-radius: 18px; overflow: hidden; background: var(--white); border: 2px solid var(--cc); transform: rotate(var(--tilt, 0deg)); box-shadow: 0 10px 18px -12px rgba(11, 16, 51, .55); transition: transform .25s cubic-bezier(.2, .8, .3, 1.2), box-shadow .25s; }
-.km-card .top { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--cc); color: #fff; }
-.km-card .top small { font-weight: 700; font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.km-card .face { display: grid; place-items: center; align-content: center; gap: 2px; min-height: 92px; padding: 10px 8px; text-align: center; background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--cc) 14%, transparent), transparent 70%); animation: km-flip .5s ease-out; }
-.km-card .nm { font-size: clamp(1.1rem, 5.4vw, 1.4rem); line-height: 1.1; letter-spacing: -.02em; overflow-wrap: anywhere; }
-.km-card .q { font-size: 3rem; line-height: 1; color: var(--cc); animation: km-bob 2.4s ease-in-out infinite; }
+.km-card { --cc: var(--blue); position: relative; display: grid; grid-template-rows: auto 1fr auto; border-radius: 10px; overflow: hidden; background: var(--white); box-shadow: inset 0 0 0 2px var(--cc); transform: rotate(var(--tilt, 0deg)); transition: transform .2s cubic-bezier(.2, .8, .3, 1.2); }
+.km-card .top { position: relative; display: flex; align-items: center; min-height: 54px; padding: 8px 10px; background: var(--cc); color: #fff; overflow: hidden; }
+.km-card .top small { position: relative; z-index: 1; max-width: 62%; font-weight: 800; font-size: .95rem; line-height: 1.1; letter-spacing: -.01em; }
+.km-art { position: absolute; right: -6px; bottom: -14px; width: 74px; height: 74px; color: #fff; }
+.km-card .face { display: grid; place-items: center; align-content: center; gap: 2px; min-height: 96px; padding: 10px 8px; text-align: center; animation: km-flip .5s ease-out; }
+.km-card .nm { font-size: clamp(1.15rem, 5.6vw, 1.45rem); line-height: 1.08; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.km-card .q { font-size: 3.4rem; line-height: 1; color: var(--cc); animation: km-bob 2.4s ease-in-out infinite; }
 .km-card .face > span { font-size: .75rem; font-weight: 700; color: var(--muted); }
-.km-card .foot { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-top: 1px dashed color-mix(in srgb, var(--cc) 45%, var(--line)); font-weight: 700; font-size: .82rem; min-width: 0; }
+.km-card .foot { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-top: 2px solid var(--cc); font-weight: 700; font-size: .82rem; min-width: 0; }
 .km-card .foot > span:not(.medal) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .km-card .av { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; color: #fff; font-style: normal; font-size: .75rem; font-weight: 800; }
 .km-card .medal { margin-left: auto; }
-.km-card.self .face { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--cc) 10%, var(--white)) 0 10px, color-mix(in srgb, var(--cc) 20%, var(--white)) 10px 20px); }
-.km-card.self::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .55) 50%, transparent 62%); background-size: 250% 100%; animation: km-shine 3.2s ease-in-out infinite; }
-.km-card.on { transform: rotate(0) translateY(-4px) scale(1.03); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cc) 30%, transparent), 0 16px 24px -12px rgba(11, 16, 51, .6); z-index: 1; }
-.km-card.done .face { opacity: .55; }
+.km-card.self .face { background: repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in srgb, var(--cc) 14%, transparent) 9px 18px); }
+.km-card.on { transform: rotate(0) translateY(-4px); box-shadow: inset 0 0 0 2px var(--cc), 0 0 0 3px var(--ink); z-index: 1; }
+.km-card.done .face { opacity: .5; }
 .km-card.left { opacity: .45; filter: grayscale(.8); }
-.km-card .stamp { position: absolute; right: 8px; top: 38px; padding: 2px 10px; border: 3px solid var(--mint); border-radius: 8px; color: var(--mint); background: color-mix(in srgb, var(--white) 85%, transparent); font-weight: 800; font-size: 1.05rem; transform: rotate(-12deg); animation: km-stamp .35s cubic-bezier(.2, .9, .3, 1.4); }
+.km-card .stamp { position: absolute; right: 8px; top: 52px; padding: 2px 10px; border: 3px solid #12805a; border-radius: 6px; color: #12805a; background: var(--white); font-weight: 800; font-size: 1.05rem; transform: rotate(-12deg); animation: km-stamp .35s cubic-bezier(.2, .9, .3, 1.4); }
 
+/* Geçmiş */
 .km-hist h2 { font-size: .95rem; margin-bottom: 8px; }
 .km-hist ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .km-hist li { padding: 4px 11px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--tint); }
@@ -736,7 +739,7 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 @keyframes km-shine { from { background-position: 150% 0; } 60%, to { background-position: -50% 0; } }
 @keyframes km-stamp { from { transform: rotate(-12deg) scale(2.2); opacity: 0; } }
 @media (min-width: 560px) { .km-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .km-card, .km-card .face, .km-card .q, .km-card.self::after, .km-card .stamp, .km-ring, .km-podium .p1 .av, .km-confetti span { animation: none; } .km-card { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .km-card, .km-card .face, .km-card .q, .km-card .stamp, .km-clock, .km-podium .p1 .av, .km-confetti span { animation: none; } .km-card { transition: none; } }
 
 /* Çiz Bakalım */
 .pc { --paper: #fffdf4; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin: 12px 0 20px; min-width: 0; }
