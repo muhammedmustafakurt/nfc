@@ -4,6 +4,13 @@ import { useState } from 'react';
 
 const range = (g) => { const [a, b = a] = g.players.split('-').map(Number); return [a, b]; };
 const fits = (g, n) => { const [a, b] = range(g); return n >= a && n <= b; };
+// Her oyunun kutu sırtı rengi; açık renklerde koyu yazı kullanılır.
+const SPINE = {
+  monopoly: ['#2438e8', '#fff'], satranc: ['#1d2a5c', '#fff'], spyfall: ['#7a4b2a', '#fff'], ajanlar: ['#c0261e', '#fff'],
+  vampir: ['#6b2fb0', '#fff'], tabu: ['#e0457f', '#fff'], kimim: ['#12a3bf', '#04202a'], cizim: ['#f2a900', '#2a1a00'],
+  bil: ['#1f9d6b', '#fff'], catan: ['#8b5a2b', '#fff'], risk: ['#5a6b1f', '#fff'], cluedo: ['#6b2d5c', '#fff'],
+  scrabble: ['#b5651d', '#fff'], ticket: ['#1d6fa5', '#fff'], carcassonne: ['#6f7d3a', '#fff'], azul: ['#2a6fb0', '#fff'],
+};
 const upper = (g) => Number(g.minutes.split('-').pop());
 
 const SECTIONS = [
@@ -31,7 +38,7 @@ export default function GameGrid({ games, hrefs, filter = true }) {
       </>
     );
     return (
-      <li key={g.id} className={`menu-row${n > 0 && !fits(g, n) ? ' off' : ''}`}>
+      <li key={g.id} className={`menu-row${g.play ? '' : ' soon'}${n > 0 && !fits(g, n) ? ' off' : ''}`} style={g.play ? { '--bg': SPINE[g.id]?.[0], '--fg': SPINE[g.id]?.[1] } : undefined}>
         {href ? <Link href={href}>{body}</Link> : <div>{body}</div>}
       </li>
     );
