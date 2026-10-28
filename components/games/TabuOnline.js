@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Lobby from './Lobby';
 import useRoom from './useRoom';
-import { TEAM, TURN_MS } from '@/lib/tabu';
+import { TEAM, TURN_MS, TURN_OPTIONS } from '@/lib/tabu';
 
 const RING = 2 * Math.PI * 54;
 const fmt = (ms) => `${Math.max(0, Math.ceil(ms / 1000))}`;
@@ -13,6 +13,7 @@ export default function TabuOnline({ cafe, masa }) {
   const ui = useRoom({ cafe, masa, game: 'tabu' });
   const { room, err, busy, send } = ui;
   const [sure, setSure] = useState(false);
+  const [secs, setSecs] = useState(60); // lobide seçilen tur süresi
   const [deadline, setDeadline] = useState(0);
   const [now, setNow] = useState(0);
   const sent = useRef(false);
@@ -44,6 +45,17 @@ export default function TabuOnline({ cafe, masa }) {
       <Lobby
         masaNo={masa.replace('masa-', '')} room={room} ui={ui} max={10} min={4}
         seatNote={(k) => (k === 0 ? 'masayı açan' : '')}
+        startExtra={{ ms: secs * 1000 }}
+        options={(
+          <fieldset className="tb-opt">
+            <legend>Tur süresi</legend>
+            <div>
+              {TURN_OPTIONS.map((s) => (
+                <button key={s} type="button" className={`btn sm${secs === s ? ' primary' : ''}`} aria-pressed={secs === s} onClick={() => setSecs(s)}>{s} sn</button>
+              ))}
+            </div>
+          </fieldset>
+        )}
       />
     );
   }
@@ -52,7 +64,9 @@ export default function TabuOnline({ cafe, masa }) {
   const t = g.turn;
   const over = g.over;
   const info = seated ? g.me : null; // { team, describer, judge }
-  const frac = running ? Math.min(1, left / TURN_MS) : 0;
+  const turnMs = g.turnMs || TURN_MS;
+  const won = over && info && over.winner !== 'none' ? over.winner === info.team : null;
+  const frac = running ? Math.min(1, left / turnMs) : 0;
   const urgency = left < 10000 ? 'low' : left < 20000 ? 'mid' : '';
 
   return (
@@ -71,25 +85,25 @@ export default function TabuOnline({ cafe, masa }) {
       {info && <p className={`tb-role ${info.team}`}>{TEAM[info.team]} takım · {over ? 'oyun bitti' : t.team === info.team ? (info.describer ? 'Sen anlatıyorsun!' : 'Tahmin et!') : 'Hakemsin: yasaklı kelimeyi yakala'}</p>}
 
       {over ? (
-        <section className={`tb-over ${over.winner}`} role="status">
-          <div className="tb-confetti" aria-hidden="true">
+        <section className={`tb-over ${over.winner}${won === false ? ' lose' : ''}`} role="status">
+          {won !== false && <div className="tb-confetti" aria-hidden="true">
             {Array.from({ length: 18 }, (_, i) => (
               <span key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 6) * 0.3}s`, animationDuration: `${2.4 + (i % 4) * 0.4}s` }}>{CONFETTI[i % CONFETTI.length]}</span>
             ))}
-          </div>
-          <div className="tb-trophy" aria-hidden="true">{over.winner === 'none' ? '🤝' : '🏆'}</div>
+          </div>}
+          <div className="tb-trophy" aria-hidden="true">{over.winner === 'none' ? '🤝' : won === false ? '😔' : '🏆'}</div>
           <p>{over.text}</p>
           <button className="btn primary" disabled={busy} onClick={() => send('reset')}>Yeni oyun (lobiye dön)</button>
         </section>
       ) : (
         <>
-          <p className="tb-turn">Tur {Math.min(g.turnNo + 1, g.total)}/{g.total} · Sıra <b>{TEAM[t.team]}</b> takımda · Anlatıcı <b>{names[t.describer]}</b></p>
+          <p className="tb-turn">{g.overtime > 0 ? 'Uzatma eli' : `Tur ${Math.min(g.turnNo + 1, g.total)}/${g.total}`} · Sıra <b>{TEAM[t.team]}</b> takımda · Anlatıcı <b>{names[t.describer]}</b></p>
 
           {t.phase === 'ready' && (
             <section className={`tb-ready ${t.team}`}>
               {info?.describer ? (
                 <>
-                  <p>Hazır olunca başla. {Math.round(TURN_MS / 1000)} saniyen var, {3} pas hakkın var.</p>
+                  <p>Hazır olunca başla. {Math.round(turnMs / 1000)} saniyen var, {3} pas hakkın var.</p>
                   <button className="btn primary tb-go" disabled={busy} onClick={() => send('begin')}>Başla</button>
                 </>
               ) : (

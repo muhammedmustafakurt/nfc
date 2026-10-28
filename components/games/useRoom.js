@@ -52,6 +52,21 @@ export default function useRoom({ cafe, masa, game, pollMs = POLL_MS }) {
     return () => { dead = true; clearInterval(id); };
   }, [pid, cafe, masa, game, pollMs]);
 
+  // Masada oturan oyuncu "buradayım" bilgisini düzenli gönderir; sayfayı kapatan oyuncu böylece fark edilir.
+  const seatedNow = !!room && room.me >= 0 && !room.seats[room.me]?.left;
+  useEffect(() => {
+    if (!pid || !seatedNow) return;
+    const id = setInterval(() => {
+      if (document.hidden) return;
+      fetch('/api/room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cafe, masa, game, pid, action: { type: 'ping' } }),
+      }).catch(() => {});
+    }, 20000);
+    return () => clearInterval(id);
+  }, [pid, seatedNow, cafe, masa, game]);
+
   const send = useCallback(async (type, extra = {}) => {
     if (!pid || busy) return;
     setBusy(true);

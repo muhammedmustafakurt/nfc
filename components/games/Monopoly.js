@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import CityArt, { CITY_OF } from './CityArt';
-import { TILES, COLORS, fmt, newGame, roll, buy, skipBuy } from '@/lib/emlak';
+import { TILES, COLORS, fmt, newGame, roll, buy, skipBuy, rentOf } from '@/lib/emlak';
 
 // Tahtanın kenarı boyunca 7x7 ızgarada saat yönünde yerleşim (0. kare sağ alt köşe).
 function cell(i) {
@@ -67,8 +67,10 @@ export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, o
     setLog((l) => (l[0] === g.msg ? l : [g.msg, ...l].slice(0, 6)));
   }, [g]);
 
-  const moving = shown.length === g.players.length && g.players.some((p, i) => shown[i] !== p.pos);
+  const mover = shown.length === g.players.length ? g.players.findIndex((p, i) => shown[i] !== p.pos) : -1;
+  const moving = mover >= 0;
   const cur = g.players[g.turn];
+  const mine = (k) => Object.values(g.owner).filter((x) => x === k).length;
   const curTile = TILES[cur.pos];
   const over = g.phase === 'over';
 
@@ -78,7 +80,7 @@ export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, o
         {TILES.map((t, i) => {
           const [r, c] = cell(i);
           const o = g.owner[i];
-          const active = !over && shown[g.turn] === i;
+          const active = !over && shown[moving ? mover : g.turn] === i;
           return (
             <div
               key={i}
@@ -89,7 +91,8 @@ export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, o
               {CITY_OF[i] && <CityArt id={CITY_OF[i]} color={BAND[i]} />}
               {ICON[t.t] && <em className="ico">{ICON[t.t]}</em>}
               <span>{t.n}</span>
-              {t.price && <small>{fmt(t.price)}</small>}
+              {t.price && <small>{o !== undefined ? <>kira {fmt(rentOf(g, i, o))}</> : fmt(t.price)}</small>}
+              {t.price && o === undefined && <small className="rent">kira {fmt(t.rent * 2)}</small>}
               <div className="mono-tokens">
                 {g.players.map((p, k) => !p.out && shown[k] === i && (
                   <i key={k} className={`tok${hop === k ? ' hop' : ''}`} style={{ background: COLORS[k] }}>{k + 1}</i>
@@ -114,13 +117,14 @@ export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, o
                   <div className="deed-art"><CityArt id={CITY_OF[cur.pos]} color={BAND[cur.pos]} className="deed-svg" /></div>
                   <h3>{curTile.n}</h3>
                   <p>Fiyat <b>{fmt(curTile.price)}</b></p>
-                  <p>Kira <b>{fmt(curTile.rent)}</b> <small>× sahip olunan mülk</small></p>
+                  <p>Kira <b>{fmt(curTile.rent * (2 + mine(g.turn)))}</b></p>
+                  <p><small>Sahip olduğun her yeni mülkte kira {fmt(curTile.rent)} artar.</small></p>
                 </div>
               ) : (
                 <div className="mono-logo" aria-hidden="true"><span>👑</span>Emlak Krallığı</div>
               )}
               <p className="mono-msg" role="status">
-                {moving ? `${cur.name} ilerliyor…` : g.msg}
+                {moving ? `${g.players[mover].name} ilerliyor…` : g.msg}
               </p>
               {!moving && !canAct && meIdx !== null && <p className="mono-wait">{cur.name} oynuyor, bekleyin…</p>}
               {g.dice && (
@@ -152,16 +156,16 @@ export function Board({ g, meIdx = null, canAct = true, onRoll, onBuy, onSkip, o
 
       <ul className="mono-players">
         {g.players.map((p, k) => {
-          const mine = Object.keys(g.owner).filter((i) => g.owner[i] === k).map(Number);
+          const owned = Object.keys(g.owner).filter((i) => g.owner[i] === k).map(Number);
           return (
             <li key={k} className={k === g.turn && !over ? 'on' : undefined} style={{ '--pc': COLORS[k], opacity: p.out ? 0.45 : 1 }}>
               <i className="av">{k + 1}</i>
               <div className="pn">
                 <b>{p.name}{k === meIdx ? ' (sen)' : ''}</b>
-                <span>{p.out ? 'Oyunda değil' : k === g.turn && !over ? (meIdx === null || k === meIdx ? 'Sıra sizde' : 'Sırası geldi') : `${mine.length} mülk`}</span>
-                {mine.length > 0 && (
+                <span>{p.out ? 'Oyunda değil' : k === g.turn && !over ? (meIdx === null || k === meIdx ? 'Sıra sizde' : 'Sırası geldi') : `${owned.length} mülk`}</span>
+                {owned.length > 0 && (
                   <span className="chips">
-                    {mine.map((i) => <u key={i} title={TILES[i].n} style={{ background: BAND[i] }} />)}
+                    {owned.map((i) => <u key={i} title={TILES[i].n} style={{ background: BAND[i] }} />)}
                   </span>
                 )}
               </div>

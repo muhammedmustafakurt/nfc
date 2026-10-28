@@ -61,6 +61,8 @@ export default function SpyfallOnline({ cafe, masa }) {
   const names = room.seats.map((s) => s.name);
   const active = room.seats.map((s, i) => (s.left ? -1 : i)).filter((i) => i >= 0);
   const over = g.over;
+  // Kazanan ya da kaybeden taraf: kaybeden oyuncunun ekranında kupa çıkmaz.
+  const outcome = over && seated && g.me && over.winner !== 'none' ? ((over.winner === 'spy') === g.me.spy ? 'win' : 'lose') : null;
   const vote = g.vote;
   const canVote = seated && vote && me !== vote.target && vote.votes[me] === undefined;
   const voters = vote ? active.filter((i) => i !== vote.target) : [];
@@ -118,13 +120,13 @@ export default function SpyfallOnline({ cafe, masa }) {
       )}
 
       {over && (
-        <section className={`sf-over ${over.winner}`} role="status">
-          <div className="sf-confetti" aria-hidden="true">
+        <section className={`sf-over ${outcome === 'lose' ? 'lose' : outcome === 'win' ? 'win' : over.winner}`} role="status">
+          {outcome !== 'lose' && <div className="sf-confetti" aria-hidden="true">
             {Array.from({ length: 18 }, (_, i) => (
               <span key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 6) * 0.3}s`, animationDuration: `${2.4 + (i % 4) * 0.4}s` }}>{CONFETTI[i % CONFETTI.length]}</span>
             ))}
-          </div>
-          <div className="sf-trophy" aria-hidden="true">{over.winner === 'players' ? '🏆' : over.winner === 'spy' ? '🕵️' : '🤝'}</div>
+          </div>}
+          <div className="sf-trophy" aria-hidden="true">{outcome === 'lose' ? '😔' : outcome === 'win' ? '🏆' : over.winner === 'players' ? '🏆' : over.winner === 'spy' ? '🕵️' : '🤝'}</div>
           <p className="sf-verdict">{over.text}</p>
           <div className="sf-reveal">
             <div><Avatar i={over.spy} name={names[over.spy]} size="lg" /><span>Casus</span><b>{names[over.spy]}</b></div>

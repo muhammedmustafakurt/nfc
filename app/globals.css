@@ -451,6 +451,7 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 /* Tur sonu */
 .sf-over { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 12px; text-align: center; padding: 22px 14px; border-radius: 22px; background: linear-gradient(170deg, color-mix(in srgb, var(--mint) 20%, var(--white)), var(--white)); border: 2px solid var(--mint); }
 .sf-over.spy { background: linear-gradient(170deg, color-mix(in srgb, var(--err) 14%, var(--white)), var(--white)); border-color: var(--err); }
+.sf-over.lose { background: linear-gradient(170deg, color-mix(in srgb, var(--err) 14%, var(--white)), var(--white)); border-color: var(--err); }
 .sf-over.none { background: var(--white); border-color: var(--line); }
 .sf-trophy { font-size: 3.6rem; line-height: 1; animation: crown-bob 1.8s ease-in-out infinite; }
 .sf-verdict { margin: 0; font-weight: 800; font-size: 1.15rem; }
@@ -903,3 +904,12 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .rt p { margin: 0; }
 .rt-ask { display: grid; gap: 8px; }
 .rt-ask div { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Masadan kopan oyuncu */
+.away { border-style: solid; border-color: var(--err); background: color-mix(in srgb, var(--err) 6%, var(--white)); color: var(--ink); }
+.away-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.tb-over.lose { border-color: var(--line); background: var(--white); }
+.tb-opt { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
+.tb-opt legend { font-weight: 800; font-size: .9rem; padding: 0; margin: 0 auto 6px; }
+.tb-opt div { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.mono-tile small.rent { color: var(--muted); font-size: .85em; }

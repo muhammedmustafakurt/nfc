@@ -3,7 +3,7 @@ import { PALETTE } from '@/lib/emlak';
 
 // Masa lobisi: oyuncu listesi, katılma, başlatma ve ayrılma. Emlak Krallığı ve Satranç ortak kullanır.
 // seatNote(k): koltuğun yanında görünen not (ör. satrançta "Beyaz").
-export default function Lobby({ masaNo, room, ui, max, min, seatNote }) {
+export default function Lobby({ masaNo, room, ui, max, min, seatNote, options, startExtra }) {
   const { name, setName, busy, err, join, send } = ui;
   const seated = room.me >= 0;
   const full = room.seats.length >= max;
@@ -28,7 +28,8 @@ export default function Lobby({ masaNo, room, ui, max, min, seatNote }) {
         </div>
       ) : (
         <>
-          <button className="btn primary" disabled={busy || room.seats.length < min} onClick={() => send('start')}>
+          {options}
+          <button className="btn primary" disabled={busy || room.seats.length < min} onClick={() => send('start', startExtra)}>
             {room.seats.length < min ? `En az ${min} kişi gerekli` : 'Oyunu başlat'}
           </button>
           <button className="btn sm" disabled={busy} onClick={() => send('leave')}>Masadan ayrıl</button>
