@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import GameGrid from '@/components/GameGrid';
 import Mark from '@/components/Mark';
 import { GAMES } from '@/lib/games';
 
@@ -10,21 +10,7 @@ export default function GamesPage() {
       <header><Mark /></header>
       <h1>Masa oyunları</h1>
       <p className="lead">Telefonda hemen oynayın.</p>
-      <ul className="game-list">
-        {GAMES.map((g) => (
-          <li key={g.id}>
-            <div>
-              <strong>{g.name}</strong>
-              <span className="muted">{g.players} kişi · {g.minutes} dk · {g.note}</span>
-            </div>
-            {g.tableOnly
-              ? <span className="pill on">Kafede masada</span>
-              : g.play
-                ? <Link className="btn sm primary" href={`/oyunlar/${g.id}`}>Oyna</Link>
-                : <span className="pill">Yakında</span>}
-          </li>
-        ))}
-      </ul>
+      <GameGrid filter={false} games={GAMES} hrefs={Object.fromEntries(GAMES.filter((g) => g.play && !g.tableOnly).map((g) => [g.id, `/oyunlar/${g.id}`]))} />
     </main>
   );
 }

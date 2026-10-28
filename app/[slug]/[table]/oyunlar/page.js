@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import GameGrid from '@/components/GameGrid';
 import { notFound } from 'next/navigation';
 import Mark from '@/components/Mark';
 import { findCafe, MASA_RE } from '@/lib/rooms';
@@ -22,17 +22,7 @@ export default async function TableGames({ params }) {
       <header><Mark /></header>
       <h1>{biz.name}</h1>
       <p className="lead">Masa {table.replace('masa-', '')}. Aynı masadaki herkes kendi telefonundan katılıp birlikte oynayabilir.</p>
-      <ul className="game-list">
-        {GAMES.filter((g) => g.play).map((g) => (
-          <li key={g.id}>
-            <div>
-              <strong>{g.name}</strong>
-              <span className="muted">Masadakilerle, ayrı telefonlardan · {g.players} kişi · {g.minutes} dk</span>
-            </div>
-            <Link className="btn sm primary" href={`${base}/${g.id}`}>Oyna</Link>
-          </li>
-        ))}
-      </ul>
+      <GameGrid games={GAMES.filter((g) => g.play)} hrefs={Object.fromEntries(GAMES.filter((g) => g.play).map((g) => [g.id, `${base}/${g.id}`]))} />
     </main>
   );
 }
