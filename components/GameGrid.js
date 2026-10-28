@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import GameArt from './GameArt';
 
 const range = (g) => { const [a, b = a] = g.players.split('-').map(Number); return [a, b]; };
 const fits = (g, n) => { const [a, b] = range(g); return n >= a && n <= b; };
@@ -31,6 +32,7 @@ export default function GameGrid({ games, hrefs, filter = true }) {
     const [a, b] = range(g);
     const body = (
       <>
+        {g.play && <GameArt id={g.id} />}
         <strong>{g.name}</strong>
         <span className="num">{a === b ? a : `${a}–${b}`}<small>kişi · {g.minutes} dk</small></span>
         <span className="note">{g.note}</span>
