@@ -129,12 +129,13 @@ export default function BilOnline({ cafe, masa }) {
         </>
       ) : (
         <>
-          <div className="bb-prog" aria-label={`Soru ${g.turnNo + 1} / ${g.total}`}>
+          <div className="bb-prog" aria-label={g.extra > 0 && g.turnNo >= g.total - g.extra ? `Uzatma sorusu ${g.turnNo + 1 - (g.total - g.extra)}` : `Soru ${g.turnNo + 1} / ${g.total}`}>
             <ol>
               {Array.from({ length: g.total }, (_, i) => (
                 <li key={i} className={i < g.turnNo ? 'done' : i === g.turnNo ? 'now' : ''} />
               ))}
             </ol>
+            {g.extra > 0 && g.turnNo >= g.total - g.extra && <span className="cat"><b>Uzatma sorusu</b></span>}
             <span className="cat"><i aria-hidden="true">{CAT[g.cat] || '❓'}</i>{g.cat}</span>
           </div>
 

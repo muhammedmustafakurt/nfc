@@ -313,7 +313,7 @@ export default function CizimOnline({ cafe, masa }) {
             <span>{drawing ? Math.ceil(left / 1000) : '✓'}</span>
           </div>
           <div className="who">
-            <small>Tur {Math.min(g.turnNo + 1, g.total)} / {g.total}</small>
+            <small>{g.extra > 0 ? `Uzatma turu ${g.extra}` : `Tur ${Math.min(g.turnNo + 1, g.total)} / ${g.total}`}</small>
             <h2>{canDraw ? 'Sıra sende, çiz!' : `${names[g.drawer]} çiziyor`}</h2>
           </div>
 
