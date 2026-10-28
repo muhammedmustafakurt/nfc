@@ -914,29 +914,28 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .tb-opt div { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .mono-tile small.rent { color: var(--muted); font-size: .85em; }
 
-/* Oyun seçim ekranı */
-.gg-filter { display: grid; gap: 8px; margin: 4px 0 14px; padding: 12px 14px; border-radius: 16px; background: var(--tint); }
-.gg-filter > span { font-weight: 800; }
-.gg-filter div { display: flex; flex-wrap: wrap; gap: 6px; }
-.gg-filter button { min-width: 44px; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--white); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
-.gg-filter button.on { background: var(--blue); border-color: var(--blue); color: #fff; }
-.gg-filter small { color: var(--muted); }
-.gg { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.gg-card { transition: opacity .2s, transform .15s; }
-.gg-card.off { opacity: .35; }
-.gg-card > a, .gg-card > div { position: relative; display: grid; align-content: start; gap: 4px; height: 100%; padding: 14px 12px 12px; border-radius: 20px; text-decoration: none; color: var(--ink); overflow: hidden; background: linear-gradient(165deg, color-mix(in srgb, var(--gc) 16%, var(--white)), var(--white) 62%); border: 1.5px solid color-mix(in srgb, var(--gc) 30%, var(--line)); box-shadow: 0 3px 0 color-mix(in srgb, var(--gc) 28%, transparent); }
-.gg-card > a:active { transform: translateY(2px); box-shadow: none; }
-.gg-card > a:focus-visible { outline: 3px solid var(--gc); outline-offset: 2px; }
-.gg-ico { font-style: normal; display: grid; place-items: center; width: 54px; height: 54px; border-radius: 16px; font-size: 1.9rem; line-height: 1; background: var(--gc); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); margin-bottom: 4px; }
-.gg-tag { position: absolute; top: 12px; right: 12px; font-size: .72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; color: var(--gc); background: color-mix(in srgb, var(--gc) 12%, var(--white)); }
-.gg-card strong { font-size: 1.05rem; line-height: 1.15; }
-.gg-note { font-size: .85rem; color: var(--muted); line-height: 1.25; }
-.gg-meta { font-size: .8rem; color: var(--muted); margin-top: 2px; }
-.gg-meta b { color: var(--ink); }
-.gg-cta { white-space: nowrap; margin-top: 8px; justify-self: start; padding: 6px 14px; border-radius: 999px; font-weight: 800; font-size: .88rem; color: #fff; background: var(--gc); }
-.gg-card.soon > div { background: var(--white); border-color: var(--line); box-shadow: none; }
-.gg-card.soon .gg-ico { background: var(--tint); filter: grayscale(1); opacity: .7; }
-.gg-card.soon .gg-tag { color: var(--muted); background: var(--tint); }
-.gg-card.soon .gg-cta { background: var(--tint); color: var(--muted); }
-@media (prefers-reduced-motion: reduce) { .gg-card { transition: none; } }
-.gg-card.table .gg-cta { background: transparent; color: var(--gc); box-shadow: inset 0 0 0 1.5px var(--gc); }
+/* Oyun seçim ekranı: kafe menüsü gibi, süreye göre bölümlenmiş satırlar */
+.menu-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 6px 0 22px; }
+.menu-who > span { font-weight: 800; font-size: 1.05rem; }
+.menu-who div { display: flex; flex-wrap: wrap; gap: 2px 4px; }
+.menu-who button { min-width: 40px; min-height: 40px; padding: 0 8px; border: 0; background: none; font: inherit; font-weight: 700; font-size: 1.15rem; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
+.menu-who button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--blue); }
+.menu-who button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.menu-sec { margin: 0 0 26px; }
+.menu-sec h2 { display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px; font-size: 1.5rem; letter-spacing: -.02em; }
+.menu-sec h2 small { font-size: .85rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.menu-sec ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.menu-row { border-bottom: 1px solid var(--line); transition: opacity .2s; }
+.menu-row.off { opacity: .3; }
+.menu-row > a, .menu-row > div { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; align-items: baseline; padding: 13px 4px; color: var(--ink); text-decoration: none; }
+.menu-row > a:hover { background: var(--tint); }
+.menu-row > a:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.menu-row strong { font-size: 1.2rem; letter-spacing: -.015em; line-height: 1.15; }
+.menu-row .note { grid-column: 1; color: var(--muted); font-size: .9rem; margin-top: 2px; }
+.menu-row .num { grid-column: 2; grid-row: 1; text-align: right; font-weight: 800; font-size: 1.2rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.menu-row .num small { font-size: .75rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.menu-row .go { grid-column: 2; grid-row: 2; text-align: right; font-weight: 800; font-size: .88rem; color: var(--blue); }
+.menu-row > a:hover .go { text-decoration: underline; }
+.menu-row .go.dim { color: var(--muted); font-weight: 600; }
+.menu-sec.next h2, .menu-sec.next strong { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .menu-row { transition: none; } }
