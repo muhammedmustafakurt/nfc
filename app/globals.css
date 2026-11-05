@@ -949,3 +949,11 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .menu-row.soon strong { font-size: 1.15rem; }
 .menu-row.soon .num { font-size: 1rem; }
 @media (prefers-reduced-motion: reduce) { .menu-row, .menu-row > a { transition: none; } .menu-row > a:hover { transform: none; } }
+
+/* Link kısaltıcı */
+.short-list { margin-top: 36px; }
+.short-list ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
+.short-list li { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--tint); }
+.short-new { font-weight: 800; word-break: break-all; }
+.short-orig { color: var(--muted); font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.short-act { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
