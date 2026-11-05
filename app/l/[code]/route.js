@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { get, run } from '@/lib/db';
 import { CODE_RE } from '@/lib/shortener';
-import { inAppBrowser, chromeResponse } from '@/lib/chrome';
+import { notChrome, chromeResponse } from '@/lib/chrome';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +12,6 @@ export async function GET(req, { params }) {
   await run('UPDATE short_links SET clicks = clicks + 1 WHERE code = ?', code);
 
   const ua = req.headers.get('user-agent') || '';
-  if (inAppBrowser(ua)) return chromeResponse(row.url);
+  if (notChrome(ua)) return chromeResponse(row.url);
   return new NextResponse(null, { status: 307, headers: { Location: row.url, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' } });
 }

@@ -8,7 +8,7 @@ export default function ReviewPage() {
     <main className="shell">
       <header><Mark /></header>
       <h1>Google yorum linki</h1>
-      <p className="lead">Google Haritalar'daki işletme linklerini alt alta yapıştırın; her biri için Place ID'yi ve müşteriyi doğrudan Google yorum ekranına götüren linki alın. Haritalar'da işletmeyi açıp "Paylaş"a basınca çıkan link yeterli.</p>
+      <p className="lead">Google Haritalar'daki işletme linklerini alt alta yapıştırın; her biri için Place ID'yi ve müşteriyi doğrudan Google yorum ekranına götüren linki alın. Haritalar'da işletmeyi açıp "Paylaş"a basınca çıkan link yeterli. Verilen linkler kısa linktir; telefonda Chrome dışı bir tarayıcıda açılırsa müşteri Chrome'a yönlendirilir.</p>
       <PlaceFinder />
     </main>
   );

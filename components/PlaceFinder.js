@@ -1,7 +1,6 @@
 'use client';
 import { useState, useTransition } from 'react';
 import { findPlaces } from '@/lib/place-actions';
-import { shorten } from '@/lib/shortener-actions';
 import CopyButton from './CopyButton';
 
 // Her satırdaki Google Haritalar linkinden Place ID ve yorum linki çıkarır (API anahtarı yok).
@@ -19,20 +18,6 @@ export default function PlaceFinder() {
       setError(''); setRows(r.rows);
     });
   }
-  function shortenAll() {
-    start(async () => {
-      const next = [];
-      for (const r of rows) {
-        if (r.link && !r.short) {
-          const fd = new FormData(); fd.set('url', r.link);
-          const s = await shorten(fd);
-          next.push(s.short ? { ...r, short: s.short } : r);
-        } else next.push(r);
-      }
-      setRows(next);
-    });
-  }
-
   const ok = rows.filter((r) => r.id);
   const best = (r) => r.short || r.link;
   const tsv = ok.map((r) => [r.name, r.id, best(r)].join('\t')).join('\n');
@@ -50,8 +35,7 @@ export default function PlaceFinder() {
         <section className="short-list">
           <h2>Sonuçlar ({ok.length}/{rows.length})</h2>
           <span className="short-act" style={{ marginBottom: 12 }}>
-            {ok.length > 0 && <CopyButton text={tsv} label="Hepsini kopyala (ad, Place ID, link)" />}
-            {ok.length > 0 && <button type="button" className="btn sm" onClick={shortenAll} disabled={pending}>Hepsini kısalt</button>}
+            {ok.length > 0 && <CopyButton text={tsv} label="Hepsini kopyala (ad, Place ID, kısa link)" />}
           </span>
           <ul>
             {rows.map((r, i) => (
@@ -63,7 +47,7 @@ export default function PlaceFinder() {
                     <span className="short-orig">Place ID: <code>{r.id}</code></span>
                     <a className="short-new" href={best(r)} target="_blank" rel="noopener">{best(r).replace(/^https?:\/\//, '')}</a>
                     <span className="short-act">
-                      <CopyButton text={best(r)} label="Linki kopyala" />
+                      <CopyButton text={best(r)} label="Kısa linki kopyala" />
                       <CopyButton text={r.id} label="Place ID kopyala" />
                     </span>
                   </>
