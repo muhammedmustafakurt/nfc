@@ -1,4 +1,6 @@
+import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
+import { notChrome } from '@/lib/chrome';
 import { get, run } from '@/lib/db';
 import { prettyIban } from '@/lib/util';
 import { targetUrl } from '@/lib/types';
@@ -38,7 +40,11 @@ export default async function BusinessPage({ params }) {
     await run('UPDATE businesses SET taps = taps + 1 WHERE id = ?', biz.id);
     // Google ve Instagram kartları kart okutulunca doğrudan ilgili uygulamayı açar.
     const url = biz.type !== 'iban' && targetUrl(biz.type, biz.value);
-    if (url) redirect(url);
+    if (url) {
+      // Telefonda Chrome dışı bir tarayıcıdan geldiyse Chrome'u açtıran ara sayfaya gider.
+      if (notChrome((await headers()).get('user-agent'))) redirect(`/k/${encodeURIComponent(slug)}`);
+      redirect(url);
+    }
   }
 
   const groups = biz.type === 'iban' && biz.value ? prettyIban(biz.value).split(' ') : [];
