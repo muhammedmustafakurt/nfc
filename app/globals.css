@@ -957,3 +957,5 @@ code { font: 600 .95em var(--font), sans-serif; font-variant-numeric: tabular-nu
 .short-new { font-weight: 800; word-break: break-all; }
 .short-orig { color: var(--muted); font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .short-act { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.short-bad { background: color-mix(in srgb, var(--err) 10%, transparent); }
+textarea { font: inherit; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line, #d6d9e6); resize: vertical; width: 100%; }

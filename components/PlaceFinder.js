@@ -4,58 +4,73 @@ import { findPlaces } from '@/lib/place-actions';
 import { shorten } from '@/lib/shortener-actions';
 import CopyButton from './CopyButton';
 
+// Her satırdaki Google Haritalar linkinden Place ID ve yorum linki çıkarır (API anahtarı yok).
 export default function PlaceFinder() {
-  const [places, setPlaces] = useState([]);
-  const [shorts, setShorts] = useState({}); // id -> kısa link
+  const [rows, setRows] = useState([]);
   const [error, setError] = useState('');
   const [pending, start] = useTransition();
 
-  function search(e) {
+  function run(e) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     start(async () => {
       const r = await findPlaces(fd);
-      if (r.error) { setError(r.error); setPlaces([]); return; }
-      setError(''); setShorts({}); setPlaces(r.places);
+      if (r.error) { setError(r.error); return; }
+      setError(''); setRows(r.rows);
     });
   }
-  function makeShort(p) {
-    const fd = new FormData();
-    fd.set('url', p.link);
+  function shortenAll() {
     start(async () => {
-      const r = await shorten(fd);
-      if (r.error) return setError(r.error);
-      setError('');
-      setShorts((s) => ({ ...s, [p.id]: r.short }));
+      const next = [];
+      for (const r of rows) {
+        if (r.link && !r.short) {
+          const fd = new FormData(); fd.set('url', r.link);
+          const s = await shorten(fd);
+          next.push(s.short ? { ...r, short: s.short } : r);
+        } else next.push(r);
+      }
+      setRows(next);
     });
   }
 
+  const ok = rows.filter((r) => r.id);
+  const best = (r) => r.short || r.link;
+  const tsv = ok.map((r) => [r.name, r.id, best(r)].join('\t')).join('\n');
+
   return (
     <>
-      <form onSubmit={search} className="stack">
-        <label>İşletme adı ve şehir <input name="q" type="text" autoComplete="off" placeholder="Kahve Evi Kadıköy İstanbul" required /></label>
-        <button className="btn primary" type="submit" disabled={pending}>{pending ? 'Bekleyin…' : 'Ara'}</button>
+      <form onSubmit={run} className="stack">
+        <label>Google Haritalar linkleri (her satıra bir işletme)
+          <textarea name="links" rows={8} autoComplete="off" spellCheck={false} placeholder={'https://maps.app.goo.gl/abc123\nhttps://www.google.com/maps/place/Kahve+Evi/…'} required />
+        </label>
+        <button className="btn primary" type="submit" disabled={pending}>{pending ? 'Bekleyin…' : 'Yorum linklerini üret'}</button>
         <p className="msg err" role="status">{error}</p>
       </form>
-      {places.length > 0 && (
+      {rows.length > 0 && (
         <section className="short-list">
-          <h2>Sonuçlar</h2>
+          <h2>Sonuçlar ({ok.length}/{rows.length})</h2>
+          <span className="short-act" style={{ marginBottom: 12 }}>
+            {ok.length > 0 && <CopyButton text={tsv} label="Hepsini kopyala (ad, Place ID, link)" />}
+            {ok.length > 0 && <button type="button" className="btn sm" onClick={shortenAll} disabled={pending}>Hepsini kısalt</button>}
+          </span>
           <ul>
-            {places.map((p) => (
-              <li key={p.id}>
-                <strong>{p.name}</strong>
-                <span className="short-orig">{p.address}</span>
-                <span className="short-orig">Place ID: <code>{p.id}</code></span>
-                <a className="short-new" href={shorts[p.id] || p.link} target="_blank" rel="noopener">{(shorts[p.id] || p.link).replace(/^https?:\/\//, '')}</a>
-                <span className="short-act">
-                  <CopyButton text={shorts[p.id] || p.link} label="Yorum linkini kopyala" />
-                  <CopyButton text={p.id} label="Place ID kopyala" />
-                  {!shorts[p.id] && <button type="button" className="btn sm" onClick={() => makeShort(p)} disabled={pending}>Kısa link yap</button>}
-                </span>
+            {rows.map((r, i) => (
+              <li key={i} className={r.error ? 'short-bad' : undefined}>
+                <strong>{r.name || (r.id ? 'İsimsiz işletme' : 'Hata')}</strong>
+                <span className="short-orig" title={r.input}>Girilen: {r.input}</span>
+                {r.error ? <span className="msg err">{r.error}</span> : (
+                  <>
+                    <span className="short-orig">Place ID: <code>{r.id}</code></span>
+                    <a className="short-new" href={best(r)} target="_blank" rel="noopener">{best(r).replace(/^https?:\/\//, '')}</a>
+                    <span className="short-act">
+                      <CopyButton text={best(r)} label="Linki kopyala" />
+                      <CopyButton text={r.id} label="Place ID kopyala" />
+                    </span>
+                  </>
+                )}
               </li>
             ))}
           </ul>
-          <p className="lead">Doğru işletmeyi adres ve ada bakarak seçin. Link, müşteriyi doğrudan o işletmenin yorum yazma ekranına götürür.</p>
         </section>
       )}
     </>
