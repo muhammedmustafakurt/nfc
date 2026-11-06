@@ -80,7 +80,7 @@ export default async function AdminPage() {
                         label={b.email ? 'Hesabı sıfırla' : 'Yeni kod ver'}
                         title="Yeni referans kodu üretir; hesap varsa sıfırlar (ad ve bilgi korunur)"
                       />{' '}
-                      <form action={deleteBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm danger">Sil</button></form>
+                      {admin.main && <form action={deleteBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm danger">Sil</button></form>}
                     </td>
                   </tr>
                 ))}
@@ -93,7 +93,7 @@ export default async function AdminPage() {
       {admin.main ? (
         <section className="panel-box">
           <h2>Yöneticiler ({admins.length + 1})</h2>
-          <p className="lead">Ana admin (<strong>{admin.username}</strong>) ortam değişkenlerinden gelir ve silinemez. Eklediğiniz yöneticiler kart oluşturup yönetebilir; yönetici ekleyip silemezler.</p>
+          <p className="lead">Ana admin (<strong>{admin.username}</strong>) ortam değişkenlerinden gelir ve silinemez. Eklediğiniz yöneticiler kart oluşturup yönetebilir; yönetici ekleyip silemezler, kart ve kafe de silemezler.</p>
           {admins.length > 0 && (
             <ul className="admin-list">
               {admins.map((a) => (

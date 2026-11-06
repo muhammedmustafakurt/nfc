@@ -55,7 +55,7 @@ export default async function CafesPage() {
                     <td data-label="Açılan masa">{roomCount.get(c.id) || 0}</td>
                     <td className="actions">
                       <a className="btn sm primary" href={`/admin/qr/${c.slug}`} target="_blank">Masa karekodları</a>{' '}
-                      <form action={deleteCafe}><input type="hidden" name="id" value={c.id} /><button className="btn sm danger">Sil</button></form>
+                      {admin.main && <form action={deleteCafe}><input type="hidden" name="id" value={c.id} /><button className="btn sm danger">Sil</button></form>}
                     </td>
                   </tr>
                 ))}
