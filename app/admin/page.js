@@ -74,12 +74,12 @@ export default async function AdminPage() {
                     <td data-label="Bilgi">{b.value ? <span className="pill on">eklendi</span> : <span className="pill">yok</span>}</td>
                     <td data-label="Okutma">{b.taps}</td>
                     <td className="actions">
-                      <ResetBusiness
+                      {admin.main && <ResetBusiness
                         action={resetBusiness}
                         id={b.id}
                         label={b.email ? 'Hesabı sıfırla' : 'Yeni kod ver'}
                         title="Yeni referans kodu üretir; hesap varsa sıfırlar (ad ve bilgi korunur)"
-                      />{' '}
+                      />}{' '}
                       {admin.main && <form action={deleteBusiness}><input type="hidden" name="id" value={b.id} /><button className="btn sm danger">Sil</button></form>}
                     </td>
                   </tr>
